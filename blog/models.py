@@ -22,6 +22,10 @@ class Category(models.Model):
     slug_name = models.SlugField(max_length=50, unique=True, allow_unicode=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
+
 class Attachment(models.Model):
     name = models.CharField(max_length=30)
     resource_type = models.CharField(max_length=100)
@@ -39,15 +43,12 @@ class Tag(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=100, db_index=True)
     content = models.TextField()
-    image = models.ImageField(upload_to='posts/%Y/%m/%d', blank=True)
+    image = models.ImageField(upload_to='posts/%Y/%m/%d', blank=True) #upload path 문자열이 저장됨.
     slug_title = models.SlugField(max_length=150, unique=True, allow_unicode=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    attachment = models.ManyToManyField(Attachment)
-    tag = models.ManyToManyField(Tag)
-
-
-
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    attachment = models.ManyToManyField(Attachment, blank=True)
+    tag = models.ManyToManyField(Tag, blank=True)
