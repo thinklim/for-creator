@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <!-- CSS -->
     {% load static %}
+    {% load auth_extras %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
@@ -51,8 +52,19 @@
                             <div class="main-menu">
                                 <nav class="nav-menu">
                                     <ul>
-                                        <li><a href="/"><img src="{% static 'img/icon/login-variant.png' %}" alt="로그인" data-toggle="tooltip" data-placement="bottom" title="로그인"></a></li>
+                                        {% if user.is_authenticated %}
+                                            <li><a href="{% url 'login' %}"><img src="{% static 'img/icon/account.png' %}" alt="프로필" data-toggle="tooltip" data-placement="bottom" title="프로필"></a></li>
+                                            {% if request.user|has_group:"Blogger" %}
+                                            <li><a href="{% url 'login' %}"><img src="{% static 'img/icon/home.png' %}" alt="내 블로그" data-toggle="tooltip" data-placement="bottom" title="내 블로그"></a></li>
+                                            <li><a href="{% url 'login' %}"><img src="{% static 'img/icon/settings.png' %}" alt="블로그 설정" data-toggle="tooltip" data-placement="bottom" title="블로그 설정"></a></li>
+                                            {% else %}
+                                            <li><a href="/"><img src="{% static 'img/icon/plus.png' %}" alt="블로그 만들기" data-toggle="tooltip" data-placement="bottom" title="블로그 만들기"></a></li>
+                                            {% endif %}
+                                            <li><a href="/logout"><img src="{% static 'img/icon/logout-variant.png' %}" alt="로그아웃" data-toggle="tooltip" data-placement="bottom" title="로그아웃"></a></li>
+                                        {% else %}
+                                        <li><a href="{% url 'login' %}"><img src="{% static 'img/icon/login-variant.png' %}" alt="로그인" data-toggle="tooltip" data-placement="bottom" title="로그인"></a></li>
                                         <li><a href="/"><img src="{% static 'img/icon/account-plus.png' %}" alt="회원가입" data-toggle="tooltip" data-placement="bottom" title="회원가입"></a></li>
+                                        {% endif %}
                                     </ul>
                                 </nav>
                             </div>
