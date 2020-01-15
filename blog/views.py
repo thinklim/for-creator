@@ -1,4 +1,4 @@
-from django.views.generic import ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import Group, User
 from django.db import transaction
@@ -62,3 +62,14 @@ class MemberBlogView(ListView):
         context['username'] = self.kwargs['username']
 
         return context
+
+class MemberBlogPostDetailView(DetailView):
+    template_name = 'blog/member_blog_post_detail.html'
+    model = Post
+    slug_field = 'slug_title'
+    slug_url_kwarg = 'slug_title'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(User, username=self.kwargs['username'])
+
+        return Post.objects.filter(user=self.user)
