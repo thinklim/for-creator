@@ -1,5 +1,5 @@
 from django.urls import register_converter, path
-from .views import add_blog, BlogView, MemberBlogPostDetailView, MemberBlogView
+from .views import add_blog, BlogView, MemberBlogPostDetailView, MemberBlogSettingView, MemberBlogView
 from . import converters
 
 app_name = 'blog'
@@ -8,6 +8,7 @@ app_name = 'blog'
 register_converter(converters.BlogPostSlugConverter, 'bslug')
 
 urlpatterns = [
+    path('<str:username>/settings', MemberBlogSettingView.as_view(), name='member_blog_setting'),
     path('<str:username>/<bslug:slug_title>', MemberBlogPostDetailView.as_view(), name='member_blog_post_detail'),
     path('<str:username>', MemberBlogView.as_view(), name='member_blog'),
     path('add/', add_blog, name='add'),

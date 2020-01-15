@@ -2,6 +2,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import Group, User
 from django.db import transaction
+from django.http import Http404
 from .models import Blog, Category, Theme, Post, Tag
 from .forms import BlogCreateForm
 
@@ -73,3 +74,16 @@ class MemberBlogPostDetailView(DetailView):
         self.user = get_object_or_404(User, username=self.kwargs['username'])
 
         return Post.objects.filter(user=self.user)
+
+class MemberBlogSettingView(TemplateView):
+    template_name = 'blog/member_blog_setting.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.username != context['username']:
+            raise Http404
+
+        self.blog = get_object_or_404(Blog, user=self.request.user)
+        
+        return context
