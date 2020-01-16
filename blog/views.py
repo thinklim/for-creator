@@ -87,3 +87,17 @@ class MemberBlogSettingView(TemplateView):
         self.blog = get_object_or_404(Blog, user=self.request.user)
         
         return context
+
+class MemberBlogSettingPostListView(ListView):
+    template_name = 'blog/member_blog_setting_post.html'
+
+    def get_queryset(self, **kwargs):
+        username = self.kwargs['username']
+
+        if self.request.user.username != username:
+            raise Http404
+
+        self.blog = get_object_or_404(Blog, user=self.request.user)
+
+        return Post.objects.filter(blog=self.blog).order_by('-id')
+
