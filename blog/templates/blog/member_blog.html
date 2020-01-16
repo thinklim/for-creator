@@ -1,0 +1,192 @@
+{% extends 'blog_base.html' %}
+
+{% block title %}{{username}}'s BLOG{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <!-- crumbs area start -->
+    <div class="crumbs-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="crumbs-inner">
+                        <h2>{{blog.name}}</h2>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><span>Blog With Sidebar</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- crumbs area end -->
+    <!-- blog post area start -->
+    <div class="blog-post-area bp-with-sidebar pb--100">
+        <div class="container">
+            <div class="row">
+                <!-- blog list area start -->
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <div class="row">
+                        <div class="blog-list">
+                            {% for post in object_list %}
+                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                <div class="list-item">
+                                    <div class="blog-thumbnail">
+                                        <a href="{{username}}/{{post.slug_title}}"><img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog thumbnail"></a>
+                                    </div>
+                                    <h2 class="blog-title"><a href="{{username}}/{{post.slug_title}}">{{post.title}}</a></h2>
+                                    <div class="blog-meta">
+                                        <ul>
+                                            <li><i class="fa fa-calendar"></i>{{post.created.date}}</li>
+                                            <li><i class="fa fa-comment"></i>Comments</li>
+                                        </ul>
+                                    </div>
+                                    <div class="blog-summery">
+                                        <p>{{post.content}}</p>
+                                    </div>
+                                    <a href="blog.html" class="read-more">Read More</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- pagination area start -->
+                    <div class="pagination">
+                        <ul>
+                            <li><a href="#">OLDER POSTS</a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><span>3</span></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">NEWER POSTS</a></li>
+                        </ul>
+                    </div>
+                    <!-- pagination area end -->
+                </div>
+                <!-- blog list area end -->
+                <!-- sidebar area start -->
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="sidebar--area">
+                        <!-- widget search area start -->
+                        <div class="widget widget-search">
+                            <form action="#">
+                                <input type="text" placeholder="Search here">
+                                <button type="submit" id="search-submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                        <!-- widget search area end -->
+                        <!-- widget recent post area start -->
+                        <div class="widget widget-recent-post">
+                            <div class="widget-title">
+                                <h2>Recent Post</h2>
+                            </div>
+                            <div class="recent--post-list">
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb1.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb2.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb3.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb4.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb5.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                                <div class="rc-single-post">
+                                    <div class="meta-thumb">
+                                        <a href="#"><img src="{% static 'img/sidebar/sidebar-thumb6.jpg' %}" alt="post thumb"></a>
+                                    </div>
+                                    <div class="meta--content">
+                                        <a href="#">Cras dictum dolor vel eros gravida molestie.</a>
+                                        <span class="up-time">20 jan , 2017 </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- widget recent post area end -->
+                        <!-- widget categoriy area start -->
+                        <div class="widget widget-category">
+                            <div class="widget-title">
+                                <h2>Categories</h2>
+                            </div>
+                            <div class="widget--category-list">
+                                <ul>
+                                    {% for category in categories %}
+                                    <li><a href="{{username}}/{{category.slug_name}}">{{category.name}} <span>(03)</span></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- widget categoriy area end -->
+                        <!-- widget archive area start -->
+                        <div class="widget widget-archive">
+                            <div class="widget-title">
+                                <h2>Archive</h2>
+                            </div>
+                            <div class="widget--archive-list">
+                                <ul>
+                                    <li><a href="#">Jul 2017 <span>(07)</span></a></li>
+                                    <li><a href="#">Jan 2016 <span>(10)</span></a></li>
+                                    <li><a href="#">Jul 2015 <span>(08)</span></a></li>
+                                    <li><a href="#">Jan 2014 <span>(27)</span></a></li>
+                                    <li><a href="#">Jul 2013 <span>(03)</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- widget archive area end -->
+                        <!-- widget tags area start -->
+                        <div class="widget widget-tags">
+                            <div class="widget-title">
+                                <h2>Tags</h2>
+                            </div>
+                            <div class="widget-tag-list">
+                                {% for tag in tags %}
+                                <a href="{{username}}/{{tag.slug_name}}">{{tag.name}}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- widget tags area end -->
+                    </div>
+                </div>
+                <!-- sidebar area end -->
+            </div>
+        </div>
+    </div>
+    <!-- blog post area end -->
+{% endblock %}
