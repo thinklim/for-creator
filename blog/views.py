@@ -1,10 +1,12 @@
-from django.views.generic import DetailView, ListView, TemplateView
+import uuid
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import Group, User
 from django.db import transaction
 from django.http import Http404
+from django.utils.text import slugify
 from .models import Blog, Category, Theme, Post, Tag
-from .forms import BlogCreateForm
+from .forms import BlogCreateForm, MemberBlogSettingPostNewCreateForm
 
 class BlogView(TemplateView):
     template_name = 'blog/blog.html'
@@ -100,4 +102,48 @@ class MemberBlogSettingPostListView(ListView):
         self.blog = get_object_or_404(Blog, user=self.request.user)
 
         return Post.objects.filter(blog=self.blog).order_by('-id')
+
+class MemberBlogSettingPostNewCreateView(CreateView):
+    template_name = 'blog/member_blog_setting_post_new.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {'form': MemberBlogSettingPostNewCreateForm(self._get_blog(request))}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        blog = self._get_blog(request)
+        form = MemberBlogSettingPostNewCreateForm(blog, request.POST, request.FILES)
+
+        if form.is_valid():
+            new_post = form.save(commit=False)
+
+            slug_title = slugify(new_post.title, allow_unicode=True)
+            last_uid = str(uuid.uuid4()).split('-')[-1]
+            permalink = slug_title + '-' + last_uid
+            new_post.slug_title = permalink
+            new_post.blog = blog
+            new_post.user = request.user
+
+            with transaction.atomic():
+                new_post.save()
+                form.save_m2m()
+
+            success_path = '/'.join(request.path.split('/')[:-1])
+
+            return redirect(success_path)
+        else:
+            form = MemberBlogSettingPostNewCreateForm(blog)
+        
+        return render(request, self.template_name, {'form': form})
+
+    def _get_blog(self, request, **kwargs):
+        username = self.kwargs['username']
+
+        if self.request.user.username != username:
+            raise Http404
+
+        self.blog = get_object_or_404(Blog, user=request.user)
+
+        return self.blog
+
 
