@@ -1,5 +1,7 @@
 {% extends 'member_blog_setting_base.html' %}
 
+{% load static %}
+
 {% block content %}
 <div class="main-content">
     <div class="section__content section__content--p30">
@@ -47,4 +49,20 @@
         </div>
     </div>
 </div>
+
+<!-- Jquery JS-->
+<script src="{% static 'cooladmin/vendor/jquery-3.2.1.min.js' %}"></script>
+
+<!-- TagEditor JS -->
+<script src="{% static 'cooladmin/tagEditor/jquery.caret.min.js' %}"></script>
+<script src="{% static 'cooladmin/tagEditor/jquery.tag-editor.min.js' %}"></script>
+
+<script>
+    $('#id_tag').tagEditor({
+        delimiter: ', ', /* space and comma */
+        placeholder: '최대 3개까지 태그를 입력할 수 있고, 글자 수 제한은 최대 30자입니다.',
+        maxTags: 3,
+        maxLength: 30,
+    });
+</script>
 {% endblock %}

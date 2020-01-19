@@ -115,16 +115,14 @@ class MemberBlogSettingPostNewCreateView(CreateView):
         form = MemberBlogSettingPostNewCreateForm(blog, request.POST, request.FILES)
 
         if form.is_valid():
-            new_post = form.save(commit=False)
-
-            slug_title = slugify(new_post.title, allow_unicode=True)
-            last_uid = str(uuid.uuid4()).split('-')[-1]
-            permalink = slug_title + '-' + last_uid
-            new_post.slug_title = permalink
-            new_post.blog = blog
-            new_post.user = request.user
-
             with transaction.atomic():
+                new_tags = self._get_new_tags(request, form.cleaned_data['tag'])
+                form.cleaned_data['tag'] = new_tags
+
+                new_post = form.save(commit=False)
+                new_post.slug_title = get_permalink(new_post.title)
+                new_post.blog = blog
+                new_post.user = request.user
                 new_post.save()
                 form.save_m2m()
 
@@ -146,4 +144,20 @@ class MemberBlogSettingPostNewCreateView(CreateView):
 
         return self.blog
 
+    def _get_new_tags(self, request, tag_data):
+        blog = self._get_blog(request)
+        new_tags = []
 
+        if tag_data:
+            for tag_data in tag_data.split(','):
+                new_tag, is_created = Tag.objects.get_or_create(blog=blog, name=tag_data, defaults={'slug_name': get_permalink(tag_data)})
+                new_tags.append(new_tag)
+        
+        return new_tags
+
+def get_permalink(text):
+    slug = slugify(text, allow_unicode=True)
+    last_uid = str(uuid.uuid4()).split('-')[-1]
+    permalink = slug + '-' + last_uid
+
+    return permalink
