@@ -64,5 +64,20 @@
         maxTags: 3,
         maxLength: 30,
     });
+
+    tinymce.init({
+        selector: '#id_content'
+    });
+
+    $('form').submit(function(event) {
+        var content = tinymce.get('id_content');
+
+        if (!content.getContent()) {
+            alert('내용을 입력해주세요.');
+
+            content.focus();
+            return false;
+        }
+    });
 </script>
 {% endblock %}
