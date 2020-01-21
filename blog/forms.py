@@ -1,5 +1,5 @@
 from django import forms
-from .models import Blog, Category, Post, Tag
+from .models import Attachment, Blog, Category, Post, Tag
 
 
 class BlogCreateForm(forms.ModelForm):
@@ -28,3 +28,10 @@ class MemberBlogSettingPostNewCreateForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'thumbnail', 'category', 'tag', 'content']
+
+class UploadImageFileForm(forms.Form):
+    def __init__(self, blog, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.blog = blog
+
+    image = forms.ImageField()

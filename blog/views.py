@@ -2,11 +2,12 @@ import uuid
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import Group, User
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.utils.text import slugify
-from .models import Blog, Category, Theme, Post, Tag
-from .forms import BlogCreateForm, MemberBlogSettingPostNewCreateForm
+from .models import Attachment, Blog, Category, Theme, Post, Tag
+from .forms import BlogCreateForm, MemberBlogSettingPostNewCreateForm, UploadImageFileForm
 
 class BlogView(TemplateView):
     template_name = 'blog/blog.html'
@@ -39,14 +40,6 @@ def add_blog(request):
         form = BlogCreateForm()
 
     return render(request, 'blog/blog.html')
-
-# def member_blog_view(request, username):
-#     if request.method == 'GET':
-#         user = get_object_or_404(User, username=username)
-#         post_list = Post.objects.filter(user=user)
-#         context = {'post_list': post_list}
-
-#         return render(request, 'blog/member_blog.html', context)
 
 class MemberBlogView(ListView):
     template_name = 'blog/member_blog.html'
@@ -161,3 +154,20 @@ def get_permalink(text):
     permalink = slug + '-' + last_uid
 
     return permalink
+
+@login_required
+@permission_required('blog.add_attachment')
+def upload(request):
+    if request.method == 'POST':
+        blog = Blog.objects.get(user=request.user)
+        form = UploadImageFileForm(blog, request.POST, request.FILES)
+
+        if form.is_valid():
+            image = request.FILES['image']
+
+            instance = Attachment(name=image.name, image=image, blog=blog)
+            instance.save()
+
+            return JsonResponse({'message': 'success', 'location': instance.image.url})
+        else:
+            return JsonResponse({'message': 'form is invalid'})
