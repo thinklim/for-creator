@@ -20,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug_title': ('title', )}
 
-    list_display = ('id', 'title', 'slug_title', 'created_date', 'updated_date', 'category', 'image', 'blog', 'user')
+    list_display = ('id', 'title', 'slug_title', 'created_date', 'updated_date', 'category', 'thumbnail', 'blog', 'user')
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):

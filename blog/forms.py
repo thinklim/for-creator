@@ -8,7 +8,7 @@ class BlogCreateForm(forms.ModelForm):
         fields = ['name', 'theme']
 
 class MemberBlogSettingPostNewCreateForm(forms.ModelForm):
-    form_tags = {'title': '제목', 'image': '썸네일', 'category': '카테고리', 'tag': '태그', 'content': '내용'}
+    form_tags = {'title': '제목', 'thumbnail': '썸네일', 'category': '카테고리', 'tag': '태그', 'content': '내용'}
     tag = forms.CharField(max_length=100, required=False)
     content = forms.CharField(widget=forms.Textarea, required=False)
     
@@ -27,4 +27,4 @@ class MemberBlogSettingPostNewCreateForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'image', 'category', 'tag', 'content']
+        fields = ['title', 'thumbnail', 'category', 'tag', 'content']
