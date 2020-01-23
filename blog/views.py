@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils.text import slugify
+from rest_framework import generics
 from .models import Attachment, Blog, Category, Theme, Post, Tag
 from .forms import BlogCreateForm, MemberBlogSettingPostNewCreateForm, MemberBlogSettingPostEditForm, UploadImageFileForm
 
