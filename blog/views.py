@@ -236,3 +236,20 @@ class MemberBlogSettingPostEditView(UpdateView):
                 new_tags.append(new_tag)
         
         return new_tags
+
+
+class MemberBlogSettingCategoryListView(ListView):
+    template_name = 'blog/member_blog_setting_category.html'
+
+    def get_queryset(self, *kwargs):
+        self.blog = self._get_blog(self)        
+
+        return Category.objects.filter(blog=self.blog).order_by('-id')
+
+    def _get_blog(self, *kwargs):
+        username = self.kwargs['username']
+
+        if self.request.user.username != username:
+            raise Http404
+
+        return get_object_or_404(Blog, user=self.request.user)
