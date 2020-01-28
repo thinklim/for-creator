@@ -1,5 +1,5 @@
 import uuid
-from blog.models import Blog, Category, Post
+from blog.models import Blog, Category, Post, Tag
 from django.utils.text import slugify
 from rest_framework import serializers
 
@@ -30,6 +30,33 @@ class CategorySerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.slug_name = get_permalink(instance.name)
         instance.blog = validated_data.get('blog', instance.blog)
+        instance.save()
+
+        return instance
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+        extra_kwargs = {'slug_name': {'required': False}, 'blog': {'required': False}}
+        read_only_fields = ('slug_name', 'blog')
+
+    def create(self, validated_data):
+        slug_name = get_permalink(validated_data['name'])
+        user = self.context['request'].user
+        blog = Blog.objects.get(user=user)
+
+        validated_data['slug_name'] = slug_name
+        validated_data['blog'] = blog
+
+        return Tag.objects.create(**validated_data)
+
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        instance.name = validated_data.get('name', instance.name)
+        instance.slug_name = get_permalink(instance.name)
+        instance.blog = Blog.objects.get(user=user)
         instance.save()
 
         return instance

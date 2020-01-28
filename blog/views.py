@@ -253,3 +253,27 @@ class MemberBlogSettingCategoryListView(ListView):
             raise Http404
 
         return get_object_or_404(Blog, user=self.request.user)
+
+class MemberBlogSettingTagListView(ListView):
+    template_name = 'blog/member_blog_setting_tag.html'
+
+    def get_queryset(self, **kwargs):
+        self.blog = self._get_blog()
+
+        return Tag.objects.filter(blog=self.blog).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tags = [tag.name + '${}'.format(tag.id) for tag in list(context['object_list'])]
+
+        context['tag_text'] = ','.join(tags)
+
+        return context
+
+    def _get_blog(self, **kwargs):
+        username = self.kwargs['username']
+
+        if self.request.user.username != username:
+            raise Http404
+
+        return get_object_or_404(Blog, user=self.request.user)
