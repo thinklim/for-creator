@@ -32,20 +32,21 @@
                         <div class="blog-thumbnail">
                             <img src="{% static 'img/blog/blog-big-img.jpg' %}" alt="blog thumbnail">
                         </div>
-                        <h2 class="blog-title">{{object.title}}</h2>
+                        <h2 class="blog-title">{{post.title}}</h2>
                         <div class="blog-meta">
                             <ul>
-                                <li><i class="fa fa-calendar"></i>{{object.created_date}}</li>
+                                <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
                                 <li><i class="fa fa-comment"></i>Comments</li>
+                                <li><i class="fa fa-user"></i>{{post.user.username}}</li>
                             </ul>
                         </div>
                         <div class="blog-summery">
-                            {{object.content}}
+                            {{post.content|safe}}
                             <div class="blog-single-tags">
                                 <h2>Tag's</h2>
                                 <ul>
-                                    {% for tag in object.tag.all %}
-                                    <li><a href="tag/{{tag.slug_name}}">{{tag.name}}</a></li>
+                                    {% for tag in post.tag.all %}
+                                    <li><a href="#">{{tag.name}}</a></li>
                                     {% endfor %}
                                 </ul>
                             </div>

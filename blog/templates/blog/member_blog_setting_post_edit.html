@@ -1,0 +1,167 @@
+{% extends 'member_blog_setting_base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- DATA TABLE -->
+                    <h3 class="title-5 m-b-35">글 설정</h3>
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <div class="card">
+                                <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                                    {% csrf_token %}
+                                    <div class="card-header">
+                                        <strong>글 편집</strong>
+                                    </div>
+                                    <div class="card-body card-block">
+                                        {% for field in form %}
+                                        <div class="row form-group">
+                                            <div class="col col-md-3">
+                                                {{field.label_tag}}
+                                            </div>
+                                            <div class="col col-md-9">
+                                                {% if field.name == 'thumbnail' %}
+                                                <div class="row">
+                                                    <div class="col col-md-6">
+                                                        <input type="file" name="thumbnail" accept="image/*" class="form-control" id="id_thumbnail">
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        {% if field.value %}
+                                                        <p>현재: <a href="{{field.value.url}}">{{field.value.url}}</a></p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                {% else %}
+                                                {{field}}
+                                                {% endif %}
+                                                {{field.errors}}
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-dot-circle-o"></i> 수정
+                                        </button>
+                                        <button type="reset" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-ban"></i> Reset
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END DATA TABLE -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery JS-->
+<script src="{% static 'cooladmin/vendor/jquery-3.2.1.min.js' %}"></script>
+
+<!-- TagEditor JS -->
+<script src="{% static 'cooladmin/tagEditor/jquery.caret.min.js' %}"></script>
+<script src="{% static 'cooladmin/tagEditor/jquery.tag-editor.min.js' %}"></script>
+
+{% csrf_token %}
+<script>
+    $('#id_tag').tagEditor({
+        delimiter: ', ', /* space and comma */
+        placeholder: '최대 3개까지 태그를 입력할 수 있고, 글자 수 제한은 최대 30자입니다.',
+        maxTags: 3,
+        maxLength: 30,
+    });
+
+    function getCookie(name) {
+        var cookieValue = null;
+            
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    
+                    break;
+                }
+            }
+        }
+        
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    tinymce.init({
+        selector: '#id_content',
+        plugins: 'image',
+        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image',
+        images_upload_handler: function (blobInfo, success, failure) {
+            var xhr, formData;
+            xhr = new XMLHttpRequest();
+            xhr.withCredentials = false;
+            xhr.open('POST', '/blog/upload');
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            
+            xhr.onload = function() {
+                var json;
+                
+                if (xhr.status != 200) {
+                    failure('HTTP Error: ' + xhr.status);
+                    
+                    return;
+                }
+                
+                json = JSON.parse(xhr.responseText);
+                console.log(json)
+                
+                if (!json || typeof json.location != 'string') {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    
+                    return;
+                }
+                
+                success(json.location);
+            };
+            
+            formData = new FormData();
+            formData.append('image', blobInfo.blob(), blobInfo.filename());
+            xhr.send(formData);
+        }
+    });
+
+    $('form').submit(function(event) {
+        var content = tinymce.get('id_content');
+
+        if (!content.getContent()) {
+            alert('내용을 입력해주세요.');
+
+            content.focus();
+            return false;
+        }
+    });
+</script>
+{% endblock %}
