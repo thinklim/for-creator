@@ -14,6 +14,7 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
         extra_kwargs = {'slug_name': {'required': False}, 'blog': {'required': False}}
+        read_only_fields = ('slug_name', 'blog')
 
     def create(self, validated_data):
         slug_name = get_permalink(validated_data['name'])
