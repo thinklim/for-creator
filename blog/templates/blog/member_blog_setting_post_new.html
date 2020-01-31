@@ -9,14 +9,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- DATA TABLE -->
-                    <h3 class="title-5 m-b-35">글 만들기</h3>
+                    <h3 class="title-5 m-b-35">글 설정</h3>
                     <div class="row justify-content-center">
                         <div class="col">
                             <div class="card">
                                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     {% csrf_token %}
                                     <div class="card-header">
-                                        <strong>Basic Form</strong> Elements
+                                        <strong>글 만들기</strong>
                                     </div>
                                     <div class="card-body card-block">
                                         {% for field in form %}
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-primary btn-sm">
-                                            <i class="fa fa-dot-circle-o"></i> Submit
+                                            <i class="fa fa-dot-circle-o"></i> 만들기
                                         </button>
                                         <button type="reset" class="btn btn-danger btn-sm">
                                             <i class="fa fa-ban"></i> Reset
@@ -66,7 +66,28 @@
         maxLength: 30,
     });
 
-    var csrftoken = jQuery('[name=csrfmiddlewaretoken]').val();
+    function getCookie(name) {
+        var cookieValue = null;
+            
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    
+                    break;
+                }
+            }
+        }
+        
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection

@@ -1,6 +1,8 @@
 import uuid
 from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
@@ -8,79 +10,82 @@ from django.http import Http404, JsonResponse
 from django.utils.text import slugify
 from rest_framework import generics
 from .models import Attachment, Blog, Category, Theme, Post, Tag
-from .forms import BlogCreateForm, MemberBlogSettingPostNewCreateForm, MemberBlogSettingPostEditForm, UploadImageFileForm
+from .forms import BlogCreateForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
+
 
 class BlogView(TemplateView):
     template_name = 'blog/blog.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['theme_list'] = Theme.objects.all()
+        context['themes'] = Theme.objects.all()
+        context['posts'] = Post.objects.all()
 
         return context
 
-def add_blog(request):
-    if request.method == 'POST':
-        form = BlogCreateForm(request.POST)
+class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    form_class = BlogCreateForm
+    login_url = '/login'
+    permission_required = 'blog.add_blog'
+    redirect_field_name = '/login'
+    success_url = '/blog'
+    template_name = 'blog/blog.html'
 
-        if form.is_valid():
-            blog_create_input_data = form.cleaned_data
+    def get(self, request, *args, **kwargs):
+        return redirect('/blog')
 
-            with transaction.atomic():
-                blog = Blog(name=blog_create_input_data['name'], theme=blog_create_input_data['theme'], user=request.user)
-                blog.save()
-                
-                blogger_group = Group.objects.get(name='Blogger')
-                blogger_group.user_set.add(request.user)
-                
-                member_group = Group.objects.get(name='Member')
-                request.user.groups.remove(member_group)
+    def form_valid(self, form):
+        with transaction.atomic():
+            request_user = self.request.user
+            new_blog = form.save(commit=False)
+            new_blog.user = request_user
+            new_blog.save()
 
-            return redirect('/blog')
-    else:
-        form = BlogCreateForm()
+            blogger_group = Group.objects.get(name='Blogger')
+            blogger_group.user_set.add(request_user)
+            
+            member_group = Group.objects.get(name='Member')
+            request_user.groups.remove(member_group)
+        return super().form_valid(form)
 
-    return render(request, 'blog/blog.html')
-
-class MemberBlogView(ListView):
+class MemberBlogView(TemplateView):
     template_name = 'blog/member_blog.html'
-
-    def get_queryset(self):
-        self.user = get_object_or_404(User, username=self.kwargs['username'])
-
-        return Post.objects.filter(user=self.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        self.blog = Blog.objects.get(user=self.user)
-        context['blog'] = self.blog
-        context['categories'] = Category.objects.filter(blog=self.blog)
-        context['tags'] = Tag.objects.filter(blog=self.blog)
-        context['username'] = self.kwargs['username']
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        blog =  Blog.objects.get(user=user)
+        context['blog'] = blog
+        context['categories'] = Category.objects.filter(blog=blog)
+        context['posts'] = Post.objects.filter(blog=blog)
+        context['tags'] = Tag.objects.filter(blog=blog)
 
         return context
 
 class MemberBlogPostDetailView(DetailView):
-    template_name = 'blog/member_blog_post_detail.html'
     model = Post
     slug_field = 'slug_title'
     slug_url_kwarg = 'slug_title'
+    template_name = 'blog/member_blog_post_detail.html'
 
     def get_queryset(self):
-        self.user = get_object_or_404(User, username=self.kwargs['username'])
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        
+        return Post.objects.filter(user=user)
 
-        return Post.objects.filter(user=self.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['blog'] = context['post'].blog
+
+        return context
 
 class MemberBlogSettingView(TemplateView):
     template_name = 'blog/member_blog_setting.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        if self.request.user.username != context['username']:
-            raise Http404
-
-        self.blog = get_object_or_404(Blog, user=self.request.user)
+        blog = get_owner_blog(self)
+        context['blog'] = blog
         
         return context
 
@@ -88,29 +93,25 @@ class MemberBlogSettingPostListView(ListView):
     template_name = 'blog/member_blog_setting_post.html'
 
     def get_queryset(self, **kwargs):
-        username = self.kwargs['username']
+        blog = get_owner_blog(self)
 
-        if self.request.user.username != username:
-            raise Http404
+        return Post.objects.filter(blog=blog).order_by('-id')
 
-        self.blog = get_object_or_404(Blog, user=self.request.user)
-
-        return Post.objects.filter(blog=self.blog).order_by('-id')
-
-class MemberBlogSettingPostNewCreateView(CreateView):
+class MemberBlogSettingPostCreateView(CreateView):
     template_name = 'blog/member_blog_setting_post_new.html'
 
     def get(self, request, *args, **kwargs):
-        context = {'form': MemberBlogSettingPostNewCreateForm(self._get_blog(request))}
+        context = {'form': MemberBlogSettingPostCreateAndEditForm(get_owner_blog(self))}
+
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        blog = self._get_blog(request)
-        form = MemberBlogSettingPostNewCreateForm(blog, request.POST, request.FILES)
+        blog = get_owner_blog(self)
+        form = MemberBlogSettingPostCreateAndEditForm(blog, request.POST, request.FILES)
 
         if form.is_valid():
             with transaction.atomic():
-                new_tags = self._get_new_tags(request, form.cleaned_data['tag'])
+                new_tags = get_new_tags(self, form.cleaned_data['tag'])
                 form.cleaned_data['tag'] = new_tags
 
                 new_post = form.save(commit=False)
@@ -124,54 +125,9 @@ class MemberBlogSettingPostNewCreateView(CreateView):
 
             return redirect(success_path)
         else:
-            form = MemberBlogSettingPostNewCreateForm(blog)
+            form = MemberBlogSettingPostCreateAndEditForm(blog)
         
         return render(request, self.template_name, {'form': form})
-
-    def _get_blog(self, request, **kwargs):
-        username = self.kwargs['username']
-
-        if self.request.user.username != username:
-            raise Http404
-
-        self.blog = get_object_or_404(Blog, user=request.user)
-
-        return self.blog
-
-    def _get_new_tags(self, request, tag_data):
-        blog = self._get_blog(request)
-        new_tags = []
-
-        if tag_data:
-            for tag_data in tag_data.split(','):
-                new_tag, is_created = Tag.objects.get_or_create(blog=blog, name=tag_data, defaults={'slug_name': get_permalink(tag_data)})
-                new_tags.append(new_tag)
-        
-        return new_tags
-
-def get_permalink(text):
-    slug = slugify(text, allow_unicode=True)
-    last_uid = str(uuid.uuid4()).split('-')[-1]
-    permalink = slug + '-' + last_uid
-
-    return permalink
-
-@login_required
-@permission_required('blog.add_attachment')
-def upload(request):
-    if request.method == 'POST':
-        blog = Blog.objects.get(user=request.user)
-        form = UploadImageFileForm(blog, request.POST, request.FILES)
-
-        if form.is_valid():
-            image = request.FILES['image']
-
-            instance = Attachment(name=image.name, image=image, blog=blog)
-            instance.save()
-
-            return JsonResponse({'message': 'success', 'location': instance.image.url})
-        else:
-            return JsonResponse({'message': 'form is invalid'})
 
 class MemberBlogSettingPostEditView(UpdateView):
     template_name = 'blog/member_blog_setting_post_edit.html'
@@ -182,25 +138,27 @@ class MemberBlogSettingPostEditView(UpdateView):
         tag_text = ','.join(tags)
 
         initial_data = {'title': post.title, 'thumbnail':  post.thumbnail, 'category': post.category, 'tag':  tag_text, 'content': post.content}
-        context = {'form': MemberBlogSettingPostNewCreateForm(self._get_blog(request), initial=initial_data)}
+        context = {'form': MemberBlogSettingPostCreateAndEditForm(get_owner_blog(self), initial=initial_data)}
+
+        print(context)
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        blog = self._get_blog(request)
-        form = MemberBlogSettingPostEditForm(blog, request.POST, request.FILES)
+        blog = get_owner_blog(self)
+        form = MemberBlogSettingPostCreateAndEditForm(blog, request.POST, request.FILES)
 
         if form.is_valid():
             with transaction.atomic():
                 post = Post.objects.get(id=self.kwargs['pk'])
-                form_tag = self._get_new_tags(request, form.cleaned_data['tag'])
+                form_tag = get_new_tags(self, form.cleaned_data['tag'])
                 form_title = form.cleaned_data['title']
 
                 post.thumbnail = form.cleaned_data['thumbnail']
                 post.category = form.cleaned_data['category']
                 post.content = form.cleaned_data['content']
 
-                if post.title != form_title:
+                if post.title is not form_title:
                     post.title = form_title
                     post.slug_title = get_permalink(post.title)
                 
@@ -211,69 +169,74 @@ class MemberBlogSettingPostEditView(UpdateView):
 
             return redirect(success_path)
         else:
-            form = MemberBlogSettingPostNewCreateForm(blog)
+            form = MemberBlogSettingPostCreateAndEditForm(blog)
         
         return render(request, self.template_name, {'form': form})
-
-
-    def _get_blog(self, request, **kwargs):
-        username = self.kwargs['username']
-
-        if self.request.user.username != username:
-            raise Http404
-
-        self.blog = get_object_or_404(Blog, user=request.user)
-
-        return self.blog
-
-    def _get_new_tags(self, request, tag_data):
-        blog = self._get_blog(request)
-        new_tags = []
-
-        if tag_data:
-            for tag_data in tag_data.split(','):
-                new_tag, is_created = Tag.objects.get_or_create(blog=blog, name=tag_data, defaults={'slug_name': get_permalink(tag_data)})
-                new_tags.append(new_tag)
-        
-        return new_tags
-
 
 class MemberBlogSettingCategoryListView(ListView):
     template_name = 'blog/member_blog_setting_category.html'
 
     def get_queryset(self, *kwargs):
-        self.blog = self._get_blog(self)        
+        blog= get_owner_blog(self)
 
-        return Category.objects.filter(blog=self.blog).order_by('-id')
-
-    def _get_blog(self, *kwargs):
-        username = self.kwargs['username']
-
-        if self.request.user.username != username:
-            raise Http404
-
-        return get_object_or_404(Blog, user=self.request.user)
+        return Category.objects.filter(blog=blog).order_by('-id')
 
 class MemberBlogSettingTagListView(ListView):
     template_name = 'blog/member_blog_setting_tag.html'
 
     def get_queryset(self, **kwargs):
-        self.blog = self._get_blog()
+        blog = get_owner_blog(self)
 
-        return Tag.objects.filter(blog=self.blog).order_by('-id')
+        return Tag.objects.filter(blog=blog).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tags = [tag.name + '${}'.format(tag.id) for tag in list(context['object_list'])]
-
-        context['tag_text'] = ','.join(tags)
+        tag_text = ','.join(tags)
+        context['tag_text'] = tag_text
 
         return context
 
-    def _get_blog(self, **kwargs):
-        username = self.kwargs['username']
+@login_required
+@permission_required('blog.add_attachment')
+def upload(request):
+    if request.method == 'POST':
+        form = UploadImageFileForm(request.POST, request.FILES)
 
-        if self.request.user.username != username:
-            raise Http404
+        if form.is_valid():
+            blog = Blog.objects.get(user=request.user)
+            image = request.FILES['image']
 
-        return get_object_or_404(Blog, user=self.request.user)
+            attachment = Attachment(blog=blog, name=image.name, image=image)
+            attachment.save()
+
+            return JsonResponse({'message': 'success', 'location': attachment.image.url})
+        else:
+            return JsonResponse({'message': 'form is invalid'})
+
+def get_owner_blog(self):
+    request_user = self.request.user
+    url_path_username = self.kwargs['username']
+    
+    if request_user.username != url_path_username:
+        raise Http404
+    
+    return get_object_or_404(Blog, user=request_user)
+
+def get_new_tags(self, tag_text):
+    blog = get_owner_blog(self)
+    new_tags = []
+    
+    if tag_text:
+        for tag_data in tag_text.split(','):
+            new_tag, is_created = Tag.objects.get_or_create(blog=blog, name=tag_data, defaults={'slug_name': get_permalink(tag_data)})
+            new_tags.append(new_tag)
+    
+    return new_tags
+
+def get_permalink(text):
+    slug = slugify(text, allow_unicode=True)
+    last_uid = str(uuid.uuid4()).split('-')[-1]
+    permalink = slug + '-' + last_uid
+
+    return permalink

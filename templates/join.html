@@ -10,7 +10,7 @@
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Register</title>
+    <title>회원가입</title>
 
     <!-- Fontfaces CSS-->
     {% load static %}
@@ -50,7 +50,17 @@
                         <div class="login-form">
                             <form action="" method="post">
                                 {% csrf_token %}
+                                {% for field in form %}
+                                {{field.label_tag}}
                                 <div class="form-group">
+                                    {{field}}
+
+                                    {% if field.errors %}
+                                    <div class="alert alert-danger" role="alert">{{field.errors}}</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                                <!-- <div class="form-group">
                                     <label>Username</label>
                                     <input class="au-input au-input--full" type="text" name="username" placeholder="Username" required>
                                 </div>
@@ -61,25 +71,14 @@
                                 <div class="form-group">
                                     <label>Password</label>
                                     <input class="au-input au-input--full" type="password" name="password" placeholder="Password" required>
+                                </div> -->
                                 </div>
-                                </div>
-                                <div class="login-checkbox">
-                                    <label>
-                                        <input type="checkbox" name="aggree">Agree the terms and policy
-                                    </label>
-                                </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
-                                <div class="social-login-content">
-                                    <div class="social-button">
-                                        <button class="au-btn au-btn--block au-btn--blue m-b-20">register with facebook</button>
-                                        <button class="au-btn au-btn--block au-btn--blue2">register with twitter</button>
-                                    </div>
-                                </div>
+                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">회원가입</button>
                             </form>
                             <div class="register-link">
                                 <p>
-                                    Already have account?
-                                    <a href="{% static 'cooladmin/#">Sign In</a>
+                                    회원이신가요?
+                                    <a href="{% url 'login' %}">로그인</a>
                                 </p>
                             </div>
                         </div>

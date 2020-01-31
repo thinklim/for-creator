@@ -87,12 +87,12 @@
 
     $('#create').click(function () {
         categoryInput = $('input[name="category"]');
-        categoryValue = categoryInput.val();
+        categoryInputValue = categoryInput.val();
 
-        if (categoryValue) {
+        if (categoryInputValue) {
             beforeSetCsrftoken();
 
-            $.post('/api/categories', {name: categoryValue})
+            $.post('/api/categories', {name: categoryInputValue})
             .done( function (data) {
                 optionHTML = '<option value="' + data.id +'">' + data.name + '</option>'
                 $('select[name="category"]').prepend(optionHTML)
@@ -108,33 +108,35 @@
     });
 
     $('#update').click(function () {
-        categorySelect =  $('select[name="category"]')
-        categoryValue = categoryInput.val();
+        categorySelect =  $('select[name="category"]');
+        categoryInput = $('input[name="category"]');
+        categoryInputValue = categoryInput.val();
 
-        if (categoryValue) {
+        if (categoryInputValue) {
             beforeSetCsrftoken();
 
             $.ajax({
                 method: 'PUT',
                 url: '/api/categories/' + categorySelect.val(),
-                data: {name: categoryValue}
+                data: {name: categoryInputValue}
             }).done(function (data) {
                 optionHTML = '<option value="' + data.id +'">' + data.name + '</option>'
                 $('select[name="category"] option:selected').remove();
                 $('select[name="category"]').prepend(optionHTML);
                 
-                categoryInput = $('input[name="category"]');
-                categoryInput.val('');
+                alert('카테고리를 변경했습니다.');
 
-            alert('카테고리를 변경했습니다.')
+                $('select[name="category"] option:eq(0)').attr("selected", "selected");
+                categoryInput.val('');
             });
+        } else {
+            alert('카테고리 값을 입력해주세요.');
         }
     });
 
     $('#delete').click(function () {
+        categorySelect =  $('select[name="category"]');
         beforeSetCsrftoken();
-
-        categorySelect =  $('select[name="category"]')
 
         $.ajax({
             method: 'DELETE',

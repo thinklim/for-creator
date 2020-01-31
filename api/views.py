@@ -6,14 +6,7 @@ from blog.models import Blog, Category, Post, Tag
 from .permissions import IsOwnerOrReadOnly
 from .serializers import CategorySerializer, PostSerializer, TagSerializer
 
-
-class PostList(generics.ListAPIView):
-    permission_classes = (IsAuthenticated)
-
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostDetail(generics.RetrieveDestroyAPIView):
+class PostDetail(generics.DestroyAPIView):
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     queryset = Post.objects.all()

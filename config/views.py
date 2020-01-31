@@ -1,30 +1,29 @@
-from django.views.generic import View, TemplateView
+from django.contrib.auth.models import Group, User
+from django.contrib.auth.hashers import make_password
+from django.db import transaction
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.views.generic import CreateView, TemplateView
 from .forms import JoinForm
 
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-class JoinView(View):
-    template_name = 'join.html'
+class JoinView(CreateView):
     form_class = JoinForm
+    success_url = '/login'
+    template_name = 'join.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-    
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+    def form_valid(self, form):
+        with transaction.atomic():
+            new_user = form.save(commit=False)
+            new_user.password = make_password(new_user.password)
+            new_user.save()
 
-        if form.is_valid():
-            user_input_data = form.cleaned_data
-            user = User.objects.create_user(user_input_data['username'], user_input_data['email'], user_input_data['password'])
-            user.save()
-
-            return redirect('/login')
-
-        return render(request, self.template_name)
+            member_group = Group.objects.get(name='Member')
+            member_group.user_set.add(new_user)
+        
+        return super().form_valid(form)
 
 
     
