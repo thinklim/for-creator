@@ -1,5 +1,5 @@
 from django.urls.converters import StringConverter
 
 
-class BlogPostSlugConverter(StringConverter):
+class UnicodeSlugConverter(StringConverter):
     regex = '[-\w]+'

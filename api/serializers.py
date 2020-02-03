@@ -1,10 +1,19 @@
 import uuid
 from blog.models import Blog, Category, Post, Tag
+from django.contrib.auth.models import User
 from django.utils.text import slugify
 from rest_framework import serializers
 
 
 class PostSerializer(serializers.ModelSerializer):
+    blog = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
+    tag = serializers.StringRelatedField(many=True)
+    user = serializers.StringRelatedField()
+
+    created_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    updated_date =  serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
     class Meta:
         model = Post
         fields = '__all__'

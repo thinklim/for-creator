@@ -26,10 +26,14 @@
 <section class="blog-post ptb--100" id="blog">
     <div class="container">
         <div class="row">
-            <ul class="nav nav-tabs" id="theme-tabs">
-                <li role="presentation" class="active"><a href="#전체" data-toggle="tab">전체</a></li>
+            <ul class="nav nav-pills" id="theme-tabs">
+                <li role="presentation" class="active">
+                    <a href="#전체" data-toggle="pill">전체</a>
+                </li>
                 {% for theme in themes %}
-                <li role="presentation"><a href="#{{theme.name}}">{{theme.name}}</a></li>
+                <li role="presentation">
+                    <a href="#{{theme.slug_name}}"data-toggle="pill">{{theme.name}}</a>
+                </li>
                 {% endfor %}
             </ul>
             <div class="tab-content">
@@ -39,16 +43,25 @@
                     <div class="col-md-4 col-sm-6 col-xs-12 col-6">
                         <div class="single-post">
                             <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">
-                                <img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog image">
+                                {% if post.thumbnail %}
+                                <img src="{{post.thumbnail.url}}" alt="blog image">
+                                {% else %}
+                                <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog image">
+                                {% endif %}
                             </a>
                             <div class="blog-meta">
                                 <ul>
-                                    <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
-                                    <li><i class="fa fa-user"></i>{{post.user.username}}</li>
+                                    <li><i class="fa fa-calendar"></i>{{post.created_date|date:"Y-m-d H:i"}}</li>
+                                    <li>
+                                        <i class="fa fa-user"></i>
+                                        <a href="{% url 'blog:member_blog' post.user.username %}">{{post.user.username}}</a>
+                                    </li>
                                 </ul>
                             </div>
                             <h2>
-                                <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">{{post.title}}</a>
+                                <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">
+                                    {{post.title}}
+                                </a>
                             </h2>
                             <p>{{post.content|striptags}}</p>
                         </div>
@@ -56,22 +69,7 @@
                     {% endfor %}
                 </div>
                 {% for theme in themes %}
-                <div id="{{theme.name}}" class="tab-pane fade">
-                    <hr>
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                        <div class="single-post">
-                            <a href="blog.html"><img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog image"></a>
-                            <div class="blog-meta">
-                                <ul>
-                                    <li><i class="fa fa-user"></i>John</li>
-                                    <li><i class="fa fa-comment"></i>Comments</li>
-                                    <li><i class="fa fa-calendar"></i>21 Feb 2018</li>
-                                </ul>
-                            </div>
-                            <h2><a href="blog.html">There are many variations</a></h2>
-                            <p>Lorem ipsum dolor sit amet,ut consectetur adipisicing elit,eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        </div>
-                    </div>
+                <div id="{{theme.slug_name}}" class="tab-pane fade">
                   </div>
                 {% endfor %}
               </div>
@@ -101,7 +99,42 @@
 
 <script>
 $('#theme-tabs a').click(function (e) {
-    $(this).tab('show')
+    e.preventDefault();
+    $(this).tab('show');
+
+    current_theme_slug_name = $(this).attr('href').slice(1);
+
+    if (current_theme_slug_name !== '전체'){
+        $.get('/api/themes/' + current_theme_slug_name + '/posts')
+        .done(function (data) {
+            result = '';
+
+            $.each(data, function(index, item) {
+                var createdDate = '<li><i class="fa fa-calendar"></i>' + item.created_date + '</li>';
+                var user = '<li><i class="fa fa-user"></i>' + item.user + '</li>';
+                var ul = $('<ul></ul>').html(createdDate + user);
+                var thumbnail = '';
+
+                if (item.thumbnail) {
+                    thumbnail += '<a href="#"><img src="' + item.thumbnail+ '" alt="blog image"></a>';
+                } else {
+                    thumbnail += '<a href="#"><img src="/static/img/blog/blog-post-img1.jpg" alt="blog image"></a>';
+                }
+
+                var postMeta = $('<div class="blog-meta"></div>').html(ul).prop('outerHTML');
+                var title = '<h2><a href="#">' + item.title +'</a></h2>';
+                var contentStripTags = item.content.replace(/(<([^>]+)>)/ig,"");
+                var content = '<p>' + contentStripTags  + '</p>';
+
+                var post = $('<div class="single-post"></div').html(thumbnail + postMeta + title + content);
+                var div = $('<div class="col-md-4 col-sm-6 col-xs-12 col-6"></div>');
+
+                result += div.html(post).prop('outerHTML');
+            });
+
+            $('#' + current_theme_slug_name).html('<hr>' + result);
+        });
+    }
 });
 </script>
 {% endblock %}
