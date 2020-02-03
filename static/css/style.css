@@ -1012,10 +1012,11 @@ END Call To Action
     display: block;
     margin-bottom: 7px;
 }
-.single-post a >img{
+/* origin */
+/* .single-post a >img{
     border-radius: 5px 5px 0px 0px;
     max-width: 100%;
-}
+} */
 .single-post .blog-meta{}
 .single-post .blog-meta ul{}
 .single-post .blog-meta ul li{
@@ -1029,6 +1030,11 @@ END Call To Action
     margin-right: 5px;
     color: #444;
 }
+.single-post .blog-meta ul li a:hover{
+    color: #5a10fb;
+    text-decoration: underline;
+}
+
 .single-post h2 a{
     display: block;
     font-size: 20px;
@@ -1041,10 +1047,11 @@ END Call To Action
 .single-post h2 a:hover{
     color: #5a10fb;
 }
-.single-post p{
+/* origin */
+/* .single-post p{
     color: #555;
     letter-spacing: 0.01em;
-}
+} */
 
 /*===========================
 END Blog Post
@@ -1784,6 +1791,30 @@ END Blog Standard
 
 .widget-tag-list a:hover {
     background-color: #e8313b;
+}
+
+/* custom */
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+    color: #fff;
+    background-color: #591efb;
+}
+.single-post a >img{
+    border-radius: 5px 5px 0px 0px;
+    max-width: 100%;
+    max-height: 230px;
+}
+.single-post .blog-meta ul li i, .single-post .blog-meta ul li a{
+    display: inline;
+    margin-right: 5px;
+    color: #444;
+}
+.single-post p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #555;
+    letter-spacing: 0.01em;
+    margin-bottom: 15px;
 }
 
 /*===========================
