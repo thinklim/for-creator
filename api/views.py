@@ -3,11 +3,13 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from blog.models import Blog, Category, Post, Tag, Theme
+from .pagination import StandardResultSetPaginaion
 from .permissions import IsOwnerOrReadOnly
 from .serializers import CategorySerializer, PostSerializer, TagSerializer
 
 
 class ThemePostList(generics.ListAPIView):
+    pagination_class = StandardResultSetPaginaion
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -16,6 +18,11 @@ class ThemePostList(generics.ListAPIView):
         blog = Blog.objects.filter(theme=theme)
         
         return Post.objects.filter(blog__in=blog).distinct()
+
+class PostList(generics.ListAPIView):
+    pagination_class = StandardResultSetPaginaion
+    serializer_class = PostSerializer
+    queryset = Post.objects.all().order_by('-id')
 
 
 class PostDetail(generics.DestroyAPIView):

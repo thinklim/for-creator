@@ -64,7 +64,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for post in post_list %}
+                                {% for post in page_obj %}
                                 <tr class="tr-shadow">
                                     <td>
                                         <label class="au-checkbox">
@@ -74,10 +74,10 @@
                                     </td>
                                     <td>{{post.id}}</td>
                                     <td><a href="{% url 'blog:member_blog_setting_post_edit' username=user.get_username pk=post.id %}">{{post.title}}</a></td>
-                                    <td>{{post.user.username}}</td>
-                                    <td>{{post.created_date}}</td>
-                                    <td>{{post.updated_date}}</td>
-                                    <td>{{post.category.name}}</td>
+                                    <td>{{post.user}}</td>
+                                    <td>{{post.created_date|date:'Y-m-d H:i'}}</td>
+                                    <td>{{post.updated_date|date:'Y-m-d H:i'}}</td>
+                                    <td>{{post.category}}</td>
                                     <td>
                                         <div class="table-data-feature">
                                             <button class="item" data-toggle="tooltip" data-placement="top" data-post="{{post.id}}" title="Delete">
@@ -95,6 +95,26 @@
                         </table>
                     </div>
                     <!-- END DATA TABLE -->
+                    <!-- START PAGINATION -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.previous_page_number}}" aria-label="Previous">
+                                    이전 페이지
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{page_obj.next_page_number}}" aria-label="Next">
+                                    다음 페이지
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    <!-- END PAGINATION -->
                 </div>
             </div>
         </div>

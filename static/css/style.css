@@ -1187,9 +1187,10 @@ END Contact Area
     display: block;
 }
 
-.blog-thumbnail a img {
+/* origin */
+/* .blog-thumbnail a img {
     max-width: 100%;
-}
+} */
 
 .list-item h2.blog-title a {
     display: block;
@@ -1224,9 +1225,10 @@ END Contact Area
     margin: 7px 0px 25px;
 }
 
-.blog-summery p {
+/* origin */
+/* .blog-summery p {
     color: #696969;
-}
+} */
 
 .list-item a.read-more {
     width: 130px;
@@ -1815,6 +1817,16 @@ END Blog Standard
     color: #555;
     letter-spacing: 0.01em;
     margin-bottom: 15px;
+}
+.blog-thumbnail a img {
+    max-width: 100%;
+    max-height: 210px;
+}
+.blog-summery p {
+    color: #696969;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /*===========================

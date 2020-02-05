@@ -37,40 +37,9 @@
                 {% endfor %}
             </ul>
             <div class="tab-content">
-                <div id="전체" class="tab-pane fade in active">
-                    <hr>
-                    {% for post in posts %}
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                        <div class="single-post">
-                            <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">
-                                {% if post.thumbnail %}
-                                <img src="{{post.thumbnail.url}}" alt="blog image">
-                                {% else %}
-                                <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog image">
-                                {% endif %}
-                            </a>
-                            <div class="blog-meta">
-                                <ul>
-                                    <li><i class="fa fa-calendar"></i>{{post.created_date|date:"Y-m-d H:i"}}</li>
-                                    <li>
-                                        <i class="fa fa-user"></i>
-                                        <a href="{% url 'blog:member_blog' post.user.username %}">{{post.user.username}}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h2>
-                                <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">
-                                    {{post.title}}
-                                </a>
-                            </h2>
-                            <p>{{post.content|striptags}}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+                <div id="전체" class="tab-pane fade active in"></div>
                 {% for theme in themes %}
-                <div id="{{theme.slug_name}}" class="tab-pane fade">
-                  </div>
+                <div id="{{theme.slug_name}}" class="tab-pane fade"></div>
                 {% endfor %}
               </div>
         </div>
@@ -81,14 +50,7 @@
 <div class="pagination-area">
     <div class="container">
         <div class="pagination">
-            <ul>
-                <li><a href="#">OLDER POSTS</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><span>3</span></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">NEWER POSTS</a></li>
-            </ul>
+            <ul></ul>
         </div>
     </div>
 </div>
@@ -96,45 +58,112 @@
 
 <!-- Jquery JS-->
 <script src="{% static 'js/jquery-3.2.0.min.js'%}"></script>
+<script>
+function getActiveTheme() {
+    return $('#theme-tabs li.active a').attr('href');
+}
 
+var theme = getActiveTheme();
+
+// Initial Page Load
+if (theme === "#전체") {
+    $.get('/api/posts')
+    .done(function (data) {
+        createTabContent(data, theme);
+    });
+}
+</script>
 <script>
 $('#theme-tabs a').click(function (e) {
     e.preventDefault();
     $(this).tab('show');
 
-    current_theme_slug_name = $(this).attr('href').slice(1);
+    var theme = $(this).attr('href');
+    var requestUrl = (theme !== '#전체') ? '/api/themes/' + theme.slice(1) + '/posts' : '/api/posts';
 
-    if (current_theme_slug_name !== '전체'){
-        $.get('/api/themes/' + current_theme_slug_name + '/posts')
-        .done(function (data) {
-            result = '';
+    console.log(requestUrl);
 
-            $.each(data, function(index, item) {
-                var createdDate = '<li><i class="fa fa-calendar"></i>' + item.created_date + '</li>';
-                var user = '<li><i class="fa fa-user"></i>' + item.user + '</li>';
-                var ul = $('<ul></ul>').html(createdDate + user);
-                var thumbnail = '';
-
-                if (item.thumbnail) {
-                    thumbnail += '<a href="#"><img src="' + item.thumbnail+ '" alt="blog image"></a>';
-                } else {
-                    thumbnail += '<a href="#"><img src="/static/img/blog/blog-post-img1.jpg" alt="blog image"></a>';
-                }
-
-                var postMeta = $('<div class="blog-meta"></div>').html(ul).prop('outerHTML');
-                var title = '<h2><a href="#">' + item.title +'</a></h2>';
-                var contentStripTags = item.content.replace(/(<([^>]+)>)/ig,"");
-                var content = '<p>' + contentStripTags  + '</p>';
-
-                var post = $('<div class="single-post"></div').html(thumbnail + postMeta + title + content);
-                var div = $('<div class="col-md-4 col-sm-6 col-xs-12 col-6"></div>');
-
-                result += div.html(post).prop('outerHTML');
-            });
-
-            $('#' + current_theme_slug_name).html('<hr>' + result);
-        });
-    }
+    $.get(requestUrl)
+    .done(function (data) {
+        createTabContent(data, theme);
+    });
 });
+</script>
+<script>
+// 동적으로 만들어진 Element는 $(document).on(...)으로 접근
+$(document).on('click', '.pagination ul li a[href="#"]', function (e) {
+    e.preventDefault();
+    var page = $(this).attr('data-page');
+
+    $.get(page)
+    .done(function (data) {
+        var theme = getActiveTheme()
+        
+        createTabContent(data, theme);
+    });
+});
+</script>
+<script>
+function createPosts(data) {
+    result = ''
+
+    $.each(data.results, function(index, item) {
+        var createdDate = '<li><i class="fa fa-calendar"></i>' + item.created_date + '</li>';
+        var user = '<li><i class="fa fa-user"></i><a href="/blog/' + item.user + '">' + item.user + '</a></li>';
+        var ul = $('<ul></ul>').html(createdDate + user);
+        var thumbnail = '';
+
+        var postUrl = '/blog/' + item.user + '/' + item.slug_title;
+
+        if (item.thumbnail) {
+            thumbnail += '<a href="' + postUrl + '"><img src="' + item.thumbnail+ '" alt="blog image"></a>';
+        } else {
+            thumbnail += '<a href="' + postUrl + '"><img src="/static/img/blog/blog-post-img1.jpg" alt="blog image"></a>';
+        }
+
+        var postMeta = $('<div class="blog-meta"></div>').html(ul).prop('outerHTML');
+        var title = '<h2><a href="' + postUrl + '">' + item.title +'</a></h2>';
+        var contentStripTags = item.content.replace(/(<([^>]+)>)/ig,"");
+        var content = '<p>' + contentStripTags  + '</p>';
+
+        var post = $('<div class="single-post"></div').html(thumbnail + postMeta + title + content);
+        var div = $('<div class="col-md-4 col-sm-6 col-xs-12 col-6"></div>');
+
+        result += div.html(post).prop('outerHTML');
+    });
+
+    return result
+}
+
+function createPaginationButton (data) {
+    result = ''
+        
+    if (data.previous && data.next) {
+        const previousPage = new URL(data.previous);
+        const nextPage = new URL(data.next);
+
+        result += '<li><a href="#" data-page="' + previousPage.pathname + previousPage.search + '">이전 페이지</a></li>'
+        result += '<li><a href="#" data-page="' + nextPage.pathname + nextPage.search + '">다음 페이지</a></li>'
+    } else if (data.previous) {
+        const previousPage = new URL(data.previous);
+
+        result +=  '<li><a href="#" data-page="' + previousPage.pathname + previousPage.search + '">이전 페이지</a></li>'
+    } else if (data.next) {
+        const nextPage = new URL(data.next);
+
+        result +=  '<li><a href="#" data-page="' + nextPage.pathname + nextPage.search + '">다음 페이지</a></li>'
+    }
+        
+    return result
+}
+
+function createTabContent(data, theme) {
+    var posts = createPosts(data);
+    var pagination = $('.pagination ul');
+    var paginationButton = createPaginationButton(data);
+    
+    $(theme).html('<hr>' + posts);
+    pagination.html(paginationButton);
+}
 </script>
 {% endblock %}
