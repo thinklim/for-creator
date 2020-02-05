@@ -48,8 +48,15 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             request_user.groups.remove(member_group)
         return super().form_valid(form)
 
-class MemberBlogView(TemplateView):
+class MemberBlogView(ListView):
+    model = Post
+    paginate_by = 4
     template_name = 'blog/member_blog.html'
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs['username'])
+
+        return Post.objects.filter(user=user).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,7 +64,6 @@ class MemberBlogView(TemplateView):
         blog =  Blog.objects.get(user=user)
         context['blog'] = blog
         context['categories'] = Category.objects.filter(blog=blog)
-        context['posts'] = Post.objects.filter(blog=blog)
         context['tags'] = Tag.objects.filter(blog=blog)
 
         return context
@@ -90,12 +96,19 @@ class MemberBlogSettingView(TemplateView):
         return context
 
 class MemberBlogSettingPostListView(ListView):
+    model = Post
+    paginate_by = 4
     template_name = 'blog/member_blog_setting_post.html'
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         blog = get_owner_blog(self)
 
         return Post.objects.filter(blog=blog).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
 
 class MemberBlogSettingPostCreateView(CreateView):
     template_name = 'blog/member_blog_setting_post_new.html'

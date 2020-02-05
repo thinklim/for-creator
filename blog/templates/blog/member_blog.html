@@ -1,6 +1,6 @@
 {% extends 'blog_base.html' %}
 
-{% block title %}{{username}}의 블로그{% endblock %}
+{% block title %}{{blog.user}}의 블로그{% endblock %}
 
 {% load static %}
 
@@ -30,33 +30,34 @@
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="row">
                         <div class="blog-list">
-                            {% for post in posts %}
+                            {% for post in page_obj %}
                             <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="list-item">
                                     <div class="blog-thumbnail">
-                                        <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}">
+                                        <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}">
                                             {% if post.thumbnail %}
                                             <img src="{{post.thumbnail.url}}" alt="blog thumbnail">
+                                            {% else %}
+                                            <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog thumbnail">
                                             {% endif %}
                                         </a>
                                     </div>
                                     <h2 class="blog-title">
-                                        <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}">
+                                        <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}">
                                             {{post.title}}
                                         </a>
                                     </h2>
                                     <div class="blog-meta">
                                         <ul>
-                                            <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
-                                            <li><i class="fa fa-comment"></i>Comments</li>
-                                            <li><i class="fa fa-user"></i>{{post.user.username}}</li>
+                                            <li><i class="fa fa-calendar"></i>{{post.created_date|date:'Y-m-d H:i'}}</li>
+                                            <li><i class="fa fa-user"></i>{{post.user}}</li>
                                         </ul>
                                     </div>
                                     <div class="blog-summery">
                                         <p>{{post.content|striptags}}</p>
                                     </div>
-                                    <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}" class="read-more">
-                                        Read More
+                                    <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}" class="read-more">
+                                        더 보기
                                     </a>
                                 </div>
                             </div>
@@ -66,12 +67,12 @@
                     <!-- pagination area start -->
                     <div class="pagination">
                         <ul>
-                            <li><a href="#">OLDER POSTS</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><span>3</span></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">NEWER POSTS</a></li>
+                            {% if page_obj.has_previous %}
+                            <li><a href="?page={{page_obj.previous_page_number}}">이전 페이지</a></li>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <li><a href="?page={{page_obj.next_page_number}}">다음 페이지</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- pagination area end -->
