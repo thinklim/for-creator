@@ -1035,7 +1035,8 @@ END Call To Action
     text-decoration: underline;
 }
 
-.single-post h2 a{
+/* origin */
+/* .single-post h2 a{
     display: block;
     font-size: 20px;
     font-weight: 500;
@@ -1043,7 +1044,7 @@ END Call To Action
     margin-bottom: 11px;
     margin-top: 7px;
     letter-spacing: 0;
-}
+} */
 .single-post h2 a:hover{
     color: #5a10fb;
 }
@@ -1192,14 +1193,15 @@ END Contact Area
     max-width: 100%;
 } */
 
-.list-item h2.blog-title a {
+/* origin */
+/* .list-item h2.blog-title a {
     display: block;
     font-size: 18px;
     font-weight: 500;
     color: #272727;
     letter-spacing: 0;
     margin-bottom: 9px;
-}
+} */
 
 .list-item h2.blog-title a:hover {
     color: #5b1ffa;
@@ -1810,6 +1812,18 @@ END Blog Standard
     margin-right: 5px;
     color: #444;
 }
+.single-post h2 a{
+    display: block;
+    font-size: 20px;
+    font-weight: 500;
+    color: #232323;
+    margin-bottom: 11px;
+    margin-top: 7px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .single-post p{
     white-space: nowrap;
     overflow: hidden;
@@ -1824,6 +1838,17 @@ END Blog Standard
 }
 .blog-summery p {
     color: #696969;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-item h2.blog-title a {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: #272727;
+    letter-spacing: 0;
+    margin-bottom: 9px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

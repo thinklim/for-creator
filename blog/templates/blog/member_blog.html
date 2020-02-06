@@ -68,10 +68,10 @@
                     <div class="pagination">
                         <ul>
                             {% if page_obj.has_previous %}
-                            <li><a href="?page={{page_obj.previous_page_number}}">이전 페이지</a></li>
+                            <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.previous_page_number}}">이전 페이지</a></li>
                             {% endif %}
                             {% if page_obj.has_next %}
-                            <li><a href="?page={{page_obj.next_page_number}}">다음 페이지</a></li>
+                            <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.next_page_number}}">다음 페이지</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -83,8 +83,9 @@
                     <div class="sidebar--area">
                         <!-- widget search area start -->
                         <div class="widget widget-search">
-                            <form action="#">
-                                <input type="text" placeholder="Search here">
+                            <form action="">
+                                <input type="hidden" name="search-type" value="question">
+                                <input type="text" name="value" minlength="2" placeholder="검색어를 입력해주세요." required>
                                 <button type="submit" id="search-submit"><i class="fa fa-search"></i></button>
                             </form>
                         </div>
@@ -97,7 +98,7 @@
                             <div class="widget--category-list">
                                 <ul>
                                     {% for category in categories %}
-                                    <li><a href="{{username}}/{{category.slug_name}}">{{category.name}} <span>(03)</span></a></li>
+                                    <li><a href="?search-type=category&value={{category.slug_name}}">{{category.name}} <span>(03)</span></a></li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -110,7 +111,7 @@
                             </div>
                             <div class="widget-tag-list">
                                 {% for tag in tags %}
-                                <a href="{{username}}/{{tag.slug_name}}">{{tag.name}}</a>
+                                <a href="?search-type=tag&value={{tag.slug_name}}">{{tag.name}}</a>
                                 {% endfor %}
                             </div>
                         </div>

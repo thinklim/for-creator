@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
+from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.utils.text import slugify
 from rest_framework import generics
@@ -13,13 +14,30 @@ from .models import Attachment, Blog, Category, Theme, Post, Tag
 from .forms import BlogCreateForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
 
 
-class BlogView(TemplateView):
+class BlogView(ListView):
+    model = Post
+    paginate_by = 6
     template_name = 'blog/blog.html'
+
+    def get_queryset(self):
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value) | Q(blog__name__icontains=value) | Q(user__username__icontains=value)).order_by('-id')
+
+        return Post.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['themes'] = Theme.objects.all()
-        context['posts'] = Post.objects.all()
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
 
         return context
 
@@ -55,6 +73,16 @@ class MemberBlogView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs['username'])
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value), user=user).order_by('-id')
+            elif search_type == 'category':
+                return Post.objects.filter(user=user, category__slug_name=value).order_by('-id')
+            elif search_type == 'tag':
+                return Post.objects.filter(user=user, tag__slug_name=value).order_by('-id')
 
         return Post.objects.filter(user=user).order_by('-id')
 
@@ -65,6 +93,13 @@ class MemberBlogView(ListView):
         context['blog'] = blog
         context['categories'] = Category.objects.filter(blog=blog)
         context['tags'] = Tag.objects.filter(blog=blog)
+
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
 
         return context
 
@@ -102,12 +137,24 @@ class MemberBlogSettingPostListView(ListView):
 
     def get_queryset(self):
         blog = get_owner_blog(self)
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value), blog=blog).order_by('-id')
 
         return Post.objects.filter(blog=blog).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
+    
         return context
 
 class MemberBlogSettingPostCreateView(CreateView):

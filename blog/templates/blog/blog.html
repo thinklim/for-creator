@@ -26,27 +26,90 @@
 <section class="blog-post ptb--100" id="blog">
     <div class="container">
         <div class="row">
-            <ul class="nav nav-pills" id="theme-tabs">
-                <li role="presentation" class="active">
-                    <a href="#전체" data-toggle="pill">전체</a>
-                </li>
-                {% for theme in themes %}
-                <li role="presentation">
-                    <a href="#{{theme.slug_name}}"data-toggle="pill">{{theme.name}}</a>
-                </li>
-                {% endfor %}
-            </ul>
-            <div class="tab-content">
-                <div id="전체" class="tab-pane fade active in"></div>
-                {% for theme in themes %}
-                <div id="{{theme.slug_name}}" class="tab-pane fade"></div>
-                {% endfor %}
-              </div>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="widget widget-search">
+                    <form action="">
+                        <input type="hidden" name="search-type" value="question">
+                        <input type="text" name="value" minlength="2" placeholder="검색어를 입력해주세요." required>
+                        <button type="submit" id="search-submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
         </div>
+        <br>
+        {% if post_list %}
+        <div class="row">
+            <div class="blog-list">
+                {% for post in page_obj %}
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="list-item">
+                        <div class="blog-thumbnail">
+                            {% if post.thumbnail %}
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">
+                                <img src="{{post.thumbnail.url}}" alt="blog thumbnail">
+                            </a>
+                            {% else %}
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">
+                                <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog thumbnail">
+                            </a>
+                            {% endif %}
+                        </div>
+                        <h2 class="blog-title">
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">{{post.title}}</a>
+                        </h2>
+                        <div class="blog-meta">
+                            <ul>
+                                <li><i class="fa fa-calendar"></i>{{post.created_date|date:'Y-m-d H:i'}}</li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'blog:member_blog' post.user %}">{{post.user}}</a></li>
+                            </ul>
+                        </div>
+                        <div class="blog-summery">
+                            <p>{{post.content|striptags}} </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-pills" id="theme-tabs">
+                    <li role="presentation" class="active">
+                        <a href="#전체" data-toggle="pill">전체</a>
+                    </li>
+                    {% for theme in themes %}
+                    <li role="presentation">
+                        <a href="#{{theme.slug_name}}"data-toggle="pill">{{theme.name}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    <div id="전체" class="tab-pane fade active in"></div>
+                    {% for theme in themes %}
+                    <div id="{{theme.slug_name}}" class="tab-pane fade"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+        {% endif %}
     </div>
 </section>
 <!-- blog area end -->
 <!-- pagination area start -->
+{% if post_list %}
+<div class="pagination">
+    <ul>
+        {% if page_obj.has_previous %}
+        <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.previous_page_number}}">이전 페이지</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.next_page_number}}">다음 페이지</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% else %}
 <div class="pagination-area">
     <div class="container">
         <div class="pagination">
@@ -54,6 +117,7 @@
         </div>
     </div>
 </div>
+{% endif%}
 <!-- pagination area end -->
 
 <!-- Jquery JS-->
@@ -126,7 +190,7 @@ function createPosts(data) {
         var contentStripTags = item.content.replace(/(<([^>]+)>)/ig,"");
         var content = '<p>' + contentStripTags  + '</p>';
 
-        var post = $('<div class="single-post"></div').html(thumbnail + postMeta + title + content);
+        var post = $('<div class="single-post"></div').html(thumbnail + title + postMeta + content);
         var div = $('<div class="col-md-4 col-sm-6 col-xs-12 col-6"></div>');
 
         result += div.html(post).prop('outerHTML');
@@ -138,17 +202,13 @@ function createPosts(data) {
 function createPaginationButton (data) {
     result = ''
         
-    if (data.previous && data.next) {
-        const previousPage = new URL(data.previous);
-        const nextPage = new URL(data.next);
-
-        result += '<li><a href="#" data-page="' + previousPage.pathname + previousPage.search + '">이전 페이지</a></li>'
-        result += '<li><a href="#" data-page="' + nextPage.pathname + nextPage.search + '">다음 페이지</a></li>'
-    } else if (data.previous) {
+    if (data.previous) {
         const previousPage = new URL(data.previous);
 
         result +=  '<li><a href="#" data-page="' + previousPage.pathname + previousPage.search + '">이전 페이지</a></li>'
-    } else if (data.next) {
+    }
+    
+    if (data.next) {
         const nextPage = new URL(data.next);
 
         result +=  '<li><a href="#" data-page="' + nextPage.pathname + nextPage.search + '">다음 페이지</a></li>'
@@ -162,7 +222,7 @@ function createTabContent(data, theme) {
     var pagination = $('.pagination ul');
     var paginationButton = createPaginationButton(data);
     
-    $(theme).html('<hr>' + posts);
+    $(theme).html('<br>' + posts);
     pagination.html(paginationButton);
 }
 </script>
