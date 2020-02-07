@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.utils.text import slugify
 from rest_framework import generics
@@ -80,6 +80,9 @@ class MemberBlogView(ListView):
             if search_type == 'question':
                 return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value), user=user).order_by('-id')
             elif search_type == 'category':
+                if value == 'etc':
+                    return Post.objects.filter(user=user, category__isnull=True).order_by('-id')
+                    
                 return Post.objects.filter(user=user, category__slug_name=value).order_by('-id')
             elif search_type == 'tag':
                 return Post.objects.filter(user=user, tag__slug_name=value).order_by('-id')
@@ -91,7 +94,8 @@ class MemberBlogView(ListView):
         user = get_object_or_404(User, username=self.kwargs['username'])
         blog =  Blog.objects.get(user=user)
         context['blog'] = blog
-        context['categories'] = Category.objects.filter(blog=blog)
+        context['categories'] = Category.objects.filter(blog=blog).annotate(Count('post'))
+        context['category_etc_count'] = Post.objects.filter(blog=blog, category__isnull=True).count()
         context['tags'] = Tag.objects.filter(blog=blog)
 
         search_type = self.request.GET.get('search-type', '')

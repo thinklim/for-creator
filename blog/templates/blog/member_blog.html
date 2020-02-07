@@ -98,8 +98,9 @@
                             <div class="widget--category-list">
                                 <ul>
                                     {% for category in categories %}
-                                    <li><a href="?search-type=category&value={{category.slug_name}}">{{category.name}} <span>(03)</span></a></li>
+                                    <li><a href="?search-type=category&value={{category.slug_name}}">{{category.name}} <span>({{category.post__count}})</span></a></li>
                                     {% endfor %}
+                                    <li><a href="?search-type=category&value=etc">기타<span>({{category_etc_count}})</span></a></li>
                                 </ul>
                             </div>
                         </div>
