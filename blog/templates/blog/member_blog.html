@@ -13,8 +13,8 @@
                     <div class="crumbs-inner">
                         <h2>{{blog.name}}</h2>
                         <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><span>Blog With Sidebar</span></li>
+                            <li><a href="{% url 'blog_index' %}">블로그</a></li>
+                            <li><span>{{blog.user}}</span></li>
                         </ul>
                     </div>
                 </div>

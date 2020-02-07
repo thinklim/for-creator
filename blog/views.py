@@ -117,13 +117,7 @@ class MemberBlogPostDetailView(DetailView):
         user = get_object_or_404(User, username=self.kwargs['username'])
         
         return Post.objects.filter(user=user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['blog'] = context['post'].blog
-
-        return context
-
+        
 class MemberBlogSettingView(TemplateView):
     template_name = 'blog/member_blog_setting.html'
 
