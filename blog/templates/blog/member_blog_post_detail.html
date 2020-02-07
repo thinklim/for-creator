@@ -1,6 +1,6 @@
 {% extends 'blog_base.html' %}
 
-{% block title %}{{username}}'s BLOG{% endblock %}
+{% block title %}{{post.user}}'의 블로그{% endblock %}
 
 <!-- {% load static %} -->
 
@@ -10,11 +10,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="crumbs-inner">
-                        <h2>{{blog.name}}</h2>
+                    <!-- instead of bootstrap breadcrumb -->
+                    <div class="crumbs-inner"> 
+                        <h2>{{post.blog}}</h2>
                         <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><span>Blog Details</span></li>
+                            <li><a href="{% url 'blog_index' %}">블로그</a></li>
+                            <li><a href="{% url 'blog:member_blog' post.user %}">{{post.user}}</a></li>
+                            <li><span>글</span></li>
                         </ul>
                     </div>
                 </div>
@@ -29,21 +31,17 @@
                 <!-- blog details area start -->
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="blog-info">
-                        <div class="blog-thumbnail">
-                            <img src="{% static 'img/blog/blog-big-img.jpg' %}" alt="blog thumbnail">
-                        </div>
-                        <h2 class="blog-title">{{post.title}}</h2>
-                        <div class="blog-meta">
+                        <h1 class="blog-title text-center">{{post.title}}</h1>
+                        <div class="blog-meta text-right">
                             <ul>
-                                <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
-                                <li><i class="fa fa-comment"></i>Comments</li>
+                                <li><i class="fa fa-calendar"></i> {{post.created_date|date:'Y-m-d H:i'}}</li>
                                 <li><i class="fa fa-user"></i>{{post.user.username}}</li>
                             </ul>
                         </div>
                         <div class="blog-summery">
                             {{post.content|safe}}
                             <div class="blog-single-tags">
-                                <h2>Tag's</h2>
+                                <h2>태그</h2>
                                 <ul>
                                     {% for tag in post.tag.all %}
                                     <li><a href="#">{{tag.name}}</a></li>
@@ -55,63 +53,10 @@
                     <!-- comment area start -->
                     <div class="comment-area">
                         <div class="comment-title">
-                            <h4>Visitor Comments <span>(03)</span></h4>
+                            <h4>댓글</h4>
                         </div>
-                        <ul class="comment-list">
-                            <li class="comment-info-inner">
-                                <article>
-                                    <div class="comment-author">
-                                        <img src="{% static 'img/author/tst-author1.jpg' %}" alt="image">
-                                        <h2>Luisiana garcias</h2>
-                                    </div>
-                                    <div class="meta-data">
-                                        <p class="category">Category : <span>Apartment</span></p>
-                                    </div>
-                                    <div class="comment-content">
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam...</p>
-                                    </div>
-                                    <div class="comment-reply">
-                                        <a href="#"><i class="fa fa-reply"></i></a>
-                                    </div>
-                                </article>
-                                <ul class="children">
-                                    <li class="comment-info-inner">
-                                        <article>
-                                            <div class="comment-author">
-                                                <img src="{% static 'img/author/tst-author2.jpg' %}" alt="image">
-                                                <h2>Luisiana garcias</h2>
-                                            </div>
-                                            <div class="meta-data">
-                                                <p class="category">Category : <span>Apartment</span></p>
-                                            </div>
-                                            <div class="comment-content">
-                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam...</p>
-                                            </div>
-                                            <div class="comment-reply">
-                                                <a href="#"><i class="fa fa-reply"></i></a>
-                                            </div>
-                                        </article>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="comment-info-inner">
-                                <article>
-                                    <div class="comment-author">
-                                        <img src="{% static 'img/author/tst-author1.jpg' %}" alt="image">
-                                        <h2>Luisiana garcias</h2>
-                                    </div>
-                                    <div class="meta-data">
-                                        <p class="category">Category : <span>Apartment</span></p>
-                                    </div>
-                                    <div class="comment-content">
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam...</p>
-                                    </div>
-                                    <div class="comment-reply">
-                                        <a href="#"><i class="fa fa-reply"></i></a>
-                                    </div>
-                                </article>
-                            </li>
-                        </ul>
+                        {% load disqus_tags %}
+                        {% disqus_show_comments %}
                     </div>
                     <!-- comment area end -->
                 </div>

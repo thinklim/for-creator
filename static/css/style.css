@@ -1223,9 +1223,10 @@ END Contact Area
     margin-right: 4px;
 }
 
-.blog-summery {
+/* origin */
+/* .blog-summery {
     margin: 7px 0px 25px;
-}
+} */
 
 /* origin */
 /* .blog-summery p {
@@ -1852,6 +1853,9 @@ END Blog Standard
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.blog-summery {
+    margin: 25px 0px 25px;
 }
 
 /*===========================
