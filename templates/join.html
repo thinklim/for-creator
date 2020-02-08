@@ -9,11 +9,15 @@
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
 
+    {% load static %}
+
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'img/icon/favicon.ico' %}">
+
     <!-- Title Page-->
     <title>회원가입</title>
 
     <!-- Fontfaces CSS-->
-    {% load static %}
     <link href="{% static 'cooladmin/css/font-face.css' %}" rel="stylesheet" media="all">
     <link href="{% static 'cooladmin/vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
     <link href="{% static 'cooladmin/vendor/font-awesome-5/css/fontawesome-all.min.css' %}" rel="stylesheet" media="all">
@@ -43,8 +47,8 @@
                 <div class="login-wrap">
                     <div class="login-content">
                         <div class="login-logo">
-                            <a href="{% static 'cooladmin/#">
-                                <img src="{% static 'cooladmin/images/icon/logo.png' %}" alt="CoolAdmin">
+                            <a href="{% url 'index' %}">
+                                <img src="{% static 'img/icon/for-creator-logo2.png' %}" alt="For-Creator-logo2">
                             </a>
                         </div>
                         <div class="login-form">
