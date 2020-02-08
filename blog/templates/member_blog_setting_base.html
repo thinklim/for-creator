@@ -9,11 +9,15 @@
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
 
+    {% load static %}
+
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'img/icon/favicon.ico' %}">
+
     <!-- Title Page-->
     <title>{{user.get_username}}'s 블로그 설정</title>
 
     <!-- Fontfaces CSS-->
-    {% load static %}
     <link href="{% static 'cooladmin/css/font-face.css' %}" rel="stylesheet" media="all">
     <link href="{% static 'cooladmin/vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
     <link href="{% static 'cooladmin/vendor/font-awesome-5/css/fontawesome-all.min.css' %}" rel="stylesheet" media="all">
@@ -48,9 +52,7 @@
             <div class="header-mobile__bar">
                 <div class="container-fluid">
                     <div class="header-mobile-inner">
-                        <a class="logo" href="index.html">
-                            <img src="{% static 'cooladmin/images/icon/logo.png' %}" alt="CoolAdmin" />
-                        </a>
+                        <a href="/"><img src="{% static 'img/icon/for-creator-logo2.png' %}" alt="For-Creator-logo2"></a>
                         <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
                                 <span class="hamburger-inner"></span>
@@ -89,9 +91,7 @@
         <!-- MENU SIDEBAR-->
         <aside class="menu-sidebar d-none d-lg-block">
             <div class="logo">
-                <a href="#">
-                    <img src="{% static 'cooladmin/images/icon/logo.png' %}" alt="Cool Admin" />
-                </a>
+                <a href="/"><img src="{% static 'img/icon/for-creator-logo2.png' %}" alt="For-Creator-logo2"></a>
             </div>
             <div class="menu-sidebar__content js-scrollbar1">
                 <nav class="navbar-sidebar">
@@ -305,7 +305,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="copyright">
-                            <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                            <p>
+                                Copyright &copy;<script>document.write(new Date().getFullYear());</script> For-Creator All rights reserved | Template <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                            </p>
                         </div>
                     </div>
                 </div>
