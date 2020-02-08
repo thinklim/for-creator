@@ -17,7 +17,7 @@ class ThemePostList(generics.ListAPIView):
         theme = Theme.objects.get(slug_name=theme_slug_name)
         blog = Blog.objects.filter(theme=theme)
         
-        return Post.objects.filter(blog__in=blog).distinct()
+        return Post.objects.filter(blog__in=blog).distinct().order_by('-id')
 
 class PostList(generics.ListAPIView):
     pagination_class = StandardResultSetPaginaion

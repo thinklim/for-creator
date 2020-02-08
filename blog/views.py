@@ -31,7 +31,7 @@ class BlogView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['themes'] = Theme.objects.all()
+        context['theme_list'] = Theme.objects.all()
         search_type = self.request.GET.get('search-type', '')
         value = self.request.GET.get('value', '')
 
@@ -64,6 +64,9 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             
             member_group = Group.objects.get(name='Member')
             request_user.groups.remove(member_group)
+
+            messages.success(self.request, '<strong>블로그 만들기에 성공했습니다!</strong> 이제 당신은 블로거가 되었습니다.')
+
         return super().form_valid(form)
 
 class MemberBlogView(ListView):
@@ -92,7 +95,7 @@ class MemberBlogView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs['username'])
-        blog =  Blog.objects.get(user=user)
+        blog =  get_object_or_404(Blog, user=user)
         context['blog'] = blog
         context['categories'] = Category.objects.filter(blog=blog).annotate(Count('post'))
         context['category_etc_count'] = Post.objects.filter(blog=blog, category__isnull=True).count()
@@ -179,9 +182,9 @@ class MemberBlogSettingPostCreateView(CreateView):
                 new_post.save()
                 form.save_m2m()
 
-            success_path = '/'.join(request.path.split('/')[:-1])
+                messages.success(request, '글을 생성했습니다.')
 
-            return redirect(success_path)
+            return redirect('blog:member_blog_setting_post', request.user)
         else:
             form = MemberBlogSettingPostCreateAndEditForm(blog)
         
@@ -223,9 +226,9 @@ class MemberBlogSettingPostEditView(UpdateView):
                 post.tag.set(form_tag)
                 post.save()
 
-            success_path = '/'.join(request.path.split('/')[:-1])
+                messages.success(request, '글을 수정했습니다.')
 
-            return redirect(success_path)
+            return redirect('blog:member_blog_setting_post', request.user)
         else:
             form = MemberBlogSettingPostCreateAndEditForm(blog)
         
