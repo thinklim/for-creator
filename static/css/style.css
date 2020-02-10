@@ -143,7 +143,7 @@ textarea {
     top: 0;
     width: 100%;
     z-index: 998;
-    background-color: #5c1ef9;
+    background-color: #0f4c81;
 }
 
 .menu-area {
@@ -242,12 +242,13 @@ textarea {
     transform: rotate(-45deg) translateY(-6px);
 }
 
+
 .slicknav_menu {
     margin-top: 0;
 }
 
 .slicknav_nav {
-    background: #13c5de;
+    background: #5f7080;
     margin: 10px;
     padding: 6px 0px;
 }
@@ -275,7 +276,7 @@ END Header Area
     display: flex;
     align-items: center;
     height: 800px;
-    background: #5d12f8;
+    background: #0f4c81;
     padding-top: 80px;
 }
 
@@ -348,14 +349,14 @@ END Header Area
     height: 100%;
     width: 100%;
     opacity: 0.8;
-    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #5b1ffa) repeat scroll 0 0;
+    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #0f4c81) repeat scroll 0 0;
 }
 .full-opacity:before{
     opacity: 1;
-    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #5b1ffa) repeat scroll 0 0;
+    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #0f4c81) repeat scroll 0 0;
 }
 .warm-canvas{
-    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #5b1ffa) repeat scroll 0 0;
+    background: rgba(0, 0, 0, 0) linear-gradient(90deg, #ffdc57, #0f4c81) repeat scroll 0 0;
 }
 canvas.worms.sketch{
     max-width: 100%;
@@ -443,7 +444,7 @@ END Service Area
     bottom: 0;
     height: 2px;
     width: 130px;
-    background-color: #5a10fb;
+    background-color: #0f4c81;
     left: calc(50% - 65px);
 }
 
@@ -458,7 +459,7 @@ END Service Area
     bottom: -3px;
     height: 8px;
     width: 8px;
-    background-color: #5a10fb;
+    background-color: #0f4c81;
     left: calc(50% - 4px);
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -570,7 +571,7 @@ END Feature Area
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(89, 30, 251,0.9);
+    background-color: rgba(15, 76, 129, 0.9);
 }
 
 .ach-single {
@@ -637,7 +638,7 @@ END Achivement Area
 .screen-slider .owl-dots .owl-dot {
     height: 15px;
     width: 15px;
-    border: 1px solid #5a10fb;
+    border: 1px solid #0f4c81;
     border-radius: 50%;
     display: inline-block;
     margin: 0px 2px;
@@ -647,7 +648,7 @@ END Achivement Area
 }
 
 .screen-slider .owl-dots .active {
-    background-color: #5a10fb;
+    background-color: #0f4c81;
 }
 
 
@@ -666,7 +667,7 @@ END Screen Area
 
 .single-tst {
         text-align: center;
-    border: 2px solid #5a10fb;
+    border: 2px solid #0f4c81;
     border-radius: 10px;
     margin-top: 109px;
     padding: 0px 8%;
@@ -724,7 +725,7 @@ END Screen Area
 .testimonial-slider .owl-dots .owl-dot {
     height: 15px;
     width: 15px;
-    border: 1px solid #5a10fb;
+    border: 1px solid #0f4c81;
     border-radius: 50%;
     display: inline-block;
     margin: 0px 2px;
@@ -734,7 +735,7 @@ END Screen Area
 }
 
 .testimonial-slider .owl-dots .active {
-    background-color: #5a10fb;
+    background-color: #0f4c81;
 }
 
 
@@ -758,7 +759,7 @@ END Testimonial Area
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(89, 30, 251,0.9);
+    background-color: rgba(15, 76, 129, 0.9);
 }
 .video-area h2{
 	font-size: 40px;
@@ -854,7 +855,7 @@ END Video Area
     box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
 }
 .prc-head{
-        background: #5a10fb;
+        background: #0f4c81;
     text-align: center;
     padding: 40px;
 }
@@ -893,7 +894,7 @@ END Video Area
     font-weight: 400;
     letter-spacing: 0;
     color: #333;
-    border: 1px solid #591efb;
+    border: 1px solid #0f4c81;
     padding: 5px 21px;
     border-radius: 3px;
     display: inline-block;
@@ -901,7 +902,7 @@ END Video Area
 }
 .single-price a:hover{
     color: #fff;
-    background-color: #591efb;
+    background-color: #0f4c81;
 }
 
 /*===========================
@@ -972,7 +973,7 @@ END Pricing Area
     height: 100%;
     width: 100%;
     z-index: -1;
-    background-color: rgba(89, 30, 251,0.9);
+    background-color: rgba(15, 76, 129, 0.9);
 }
 .download-btns a {
     margin: 0px 32px;
@@ -990,7 +991,7 @@ END Pricing Area
 }
 .download-btns a:hover{
     background-color: #fff;
-    color: #5c1ef9;
+    color: #0f4c81;
 }
 .download-btns a i {
     font-size: 19px;
@@ -1031,7 +1032,7 @@ END Call To Action
     color: #444;
 }
 .single-post .blog-meta ul li a:hover{
-    color: #5a10fb;
+    color: #0f4c81;
     text-decoration: underline;
 }
 
@@ -1046,7 +1047,7 @@ END Call To Action
     letter-spacing: 0;
 } */
 .single-post h2 a:hover{
-    color: #5a10fb;
+    color: #0f4c81;
 }
 /* origin */
 /* .single-post p{
@@ -1097,7 +1098,7 @@ END Contact Area
 .contact-form #send{
     height: 45px;
     width: 150px;
-    background: #5a10fb;
+    background: #0f4c81;
     color: #fff;
     text-align: center;
     line-height: 45px;
@@ -1116,7 +1117,7 @@ END Contact Area
 }
 .s-info i{
         font-size: 21px;
-    color: #591efb;
+    color: #0f4c81;
     float: left;
     margin-right: 14px;
     margin-top: 6px;
@@ -1142,7 +1143,7 @@ END Contact Area
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-color: #5a10fb;
+    background-color: #0f4c81;
     color: #fff;
     text-align: center;
     line-height: 50px;
@@ -1162,7 +1163,7 @@ END Contact Area
 .footer-area{
     height: 80px;
     text-align: center;
-    background-color: #5a10fb;
+    background-color: #0f4c81;
     display: flex;
     align-items: center;
 }
@@ -1204,7 +1205,7 @@ END Contact Area
 } */
 
 .list-item h2.blog-title a:hover {
-    color: #5b1ffa;
+    color: #0f4c81;
 }
 
 .blog-meta {}
@@ -1236,7 +1237,7 @@ END Contact Area
 .list-item a.read-more {
     width: 130px;
     height: 40px;
-    background: #5b1ffa;
+    background: #0f4c81;
     display: block;
     text-align: center;
     line-height: 40px;
@@ -1285,7 +1286,7 @@ END Contact Area
 .blog-single-tags ul li a {
     display: inline-block;
     padding: 9px 15px;
-    background: #5b1ffa;
+    background: #0f4c81;
     color: #fff;
     text-transform: uppercase;
     line-height: 14px;
@@ -1483,7 +1484,7 @@ END Contact Area
 }
 
 .leave-comment form input#comment-submit {
-    background: #5b1ffa;
+    background: #0f4c81;
     border: 1px solid transparent;
     text-transform: uppercase;
     font-size: 12px;
@@ -1520,7 +1521,7 @@ END Contact Area
 }
 .crumbs-inner h2 {
     text-transform: uppercase;
-    color: #5b1ffa;
+    color: #0f4c81;
     letter-spacing: 0.05em;
     margin-bottom: 12px;
     font-size: 36px;
@@ -1537,7 +1538,7 @@ END Contact Area
     text-transform: uppercase;
     font-size: 12px;
     letter-spacing: 0;
-    color: #5b1ffa;
+    color: #0f4c81;
 }
 
 .crumbs-inner ul li a {
@@ -1577,7 +1578,7 @@ END Contact Area
 
 .pagination ul {
     display: inline-block;
-    background: #5b1ffa;
+    background: #0f4c81;
     padding: 4px 7px;
     border-radius: 1px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
@@ -1660,7 +1661,7 @@ END Blog Standard
     top: 0;
     height: 45px;
     width: 45px;
-    background: #5b1ffa;
+    background: #0f4c81;
     border: 1px solid transparent;
     color: #ffffff;
     border-radius: 2px;
@@ -1674,7 +1675,7 @@ END Blog Standard
 
 .widget-title {
     margin-bottom: 30px;
-    background: #5b1ffa;
+    background: #0f4c81;
     padding: 8px 10px;
     border-radius: 2px;
 }
@@ -1729,7 +1730,7 @@ END Blog Standard
 }
 
 .meta--content a:hover {
-    color: #5b1ffa;
+    color: #0f4c81;
 }
 
 .meta--content span.up-time {
@@ -1767,7 +1768,7 @@ END Blog Standard
 .widget--archive-list ul li a:hover::before,
 .sidebar--area .widget-nav-menu ul li a:hover::before,
 .sidebar--area .widget-nav-menu ul li a:hover {
-    color: #5b1ffa;
+    color: #0f4c81;
 }
 
 .widget--category-list ul li a span,
@@ -1783,7 +1784,7 @@ END Blog Standard
     display: inline-block;
     font-size: 10px;
     text-transform: uppercase;
-    background: #5b1ffa;
+    background: #0f4c81;
     color: #fff;
     padding: 7px 13px;
     margin-bottom: 5px;
@@ -1801,7 +1802,7 @@ END Blog Standard
 /* custom */
 .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
     color: #fff;
-    background-color: #591efb;
+    background-color: #0f4c81;
 }
 .single-post a >img{
     border-radius: 5px 5px 0px 0px;
@@ -1856,6 +1857,9 @@ END Blog Standard
 }
 .blog-summery {
     margin: 25px 0px 25px;
+}
+.slicknav_nav li {
+    float: left;
 }
 
 /*===========================
