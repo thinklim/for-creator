@@ -5,10 +5,18 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, TemplateView
 from .forms import JoinForm
+from blog.models import Post
 
 
 class IndexView(TemplateView):
     template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_count'] = User.objects.all().count()
+        context['post_count'] = Post.objects.all().count()
+
+        return context
 
 class JoinView(CreateView):
     form_class = JoinForm

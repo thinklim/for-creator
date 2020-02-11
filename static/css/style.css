@@ -171,7 +171,8 @@ textarea {
     display: inline-block;
 }
 
-.main-menu nav ul li a {
+/* origin */
+/* .main-menu nav ul li a {
     display: block;
     font-size: 14px;
     font-weight: 400;
@@ -180,7 +181,7 @@ textarea {
     padding: 27px 36px;
     position: relative;
     padding-left: 0;
-}
+} */
 
 .main-menu nav ul li a:before {
     content: '';
@@ -571,7 +572,7 @@ END Feature Area
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(15, 76, 129, 0.9);
+    background-color: rgba(15, 76, 129, 0.7);
 }
 
 .ach-single {
@@ -1860,6 +1861,16 @@ END Blog Standard
 }
 .slicknav_nav li {
     float: left;
+}
+.main-menu nav ul li a {
+    display: block;
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 0;
+    padding: 27px 36px;
+    position: relative;
+    padding-left: 0;
 }
 
 /*===========================
