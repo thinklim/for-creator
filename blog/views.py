@@ -129,6 +129,14 @@ class MemberBlogSettingView(TemplateView):
         blog = get_owner_blog(self)
         context['blog'] = blog
         
+        categories = Category.objects.filter(blog=blog).annotate(Count('post'))
+        dict_categories = {}
+
+        for category in categories:
+            dict_categories[category.name] = str(category.post__count)
+
+        context['categories'] = dict_categories
+        
         return context
 
 class MemberBlogSettingPostListView(ListView):
