@@ -1,6 +1,6 @@
 {% extends 'blog_base.html' %}
 
-{% block title %}{{username}}의 블로그{% endblock %}
+{% block title %}{{blog.name}}{% endblock %}
 
 {% load static %}
 
@@ -13,8 +13,8 @@
                     <div class="crumbs-inner">
                         <h2>{{blog.name}}</h2>
                         <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><span>Blog With Sidebar</span></li>
+                            <li><a href="{% url 'blog_index' %}">블로그</a></li>
+                            <li><span>{{blog.user}}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -30,33 +30,34 @@
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="row">
                         <div class="blog-list">
-                            {% for post in posts %}
+                            {% for post in page_obj %}
                             <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="list-item">
                                     <div class="blog-thumbnail">
-                                        <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}">
+                                        <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}">
                                             {% if post.thumbnail %}
                                             <img src="{{post.thumbnail.url}}" alt="blog thumbnail">
+                                            {% else %}
+                                            <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog thumbnail">
                                             {% endif %}
                                         </a>
                                     </div>
                                     <h2 class="blog-title">
-                                        <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}">
+                                        <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}">
                                             {{post.title}}
                                         </a>
                                     </h2>
                                     <div class="blog-meta">
                                         <ul>
-                                            <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
-                                            <li><i class="fa fa-comment"></i>Comments</li>
-                                            <li><i class="fa fa-user"></i>{{post.user.username}}</li>
+                                            <li><i class="fa fa-calendar"></i>{{post.created_date|date:'Y-m-d H:i'}}</li>
+                                            <li><i class="fa fa-user"></i>{{post.user}}</li>
                                         </ul>
                                     </div>
                                     <div class="blog-summery">
                                         <p>{{post.content|striptags}}</p>
                                     </div>
-                                    <a href="{% url 'blog:member_blog_post_detail' username=username slug_title=post.slug_title %}" class="read-more">
-                                        Read More
+                                    <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title %}" class="read-more">
+                                        더 보기
                                     </a>
                                 </div>
                             </div>
@@ -66,12 +67,12 @@
                     <!-- pagination area start -->
                     <div class="pagination">
                         <ul>
-                            <li><a href="#">OLDER POSTS</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><span>3</span></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">NEWER POSTS</a></li>
+                            {% if page_obj.has_previous %}
+                            <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.previous_page_number}}">이전 페이지</a></li>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.next_page_number}}">다음 페이지</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- pagination area end -->
@@ -82,8 +83,9 @@
                     <div class="sidebar--area">
                         <!-- widget search area start -->
                         <div class="widget widget-search">
-                            <form action="#">
-                                <input type="text" placeholder="Search here">
+                            <form action="">
+                                <input type="hidden" name="search-type" value="question">
+                                <input type="text" name="value" minlength="2" placeholder="검색어를 입력해주세요." required>
                                 <button type="submit" id="search-submit"><i class="fa fa-search"></i></button>
                             </form>
                         </div>
@@ -96,8 +98,9 @@
                             <div class="widget--category-list">
                                 <ul>
                                     {% for category in categories %}
-                                    <li><a href="{{username}}/{{category.slug_name}}">{{category.name}} <span>(03)</span></a></li>
+                                    <li><a href="?search-type=category&value={{category.slug_name}}">{{category.name}} <span>({{category.post__count}})</span></a></li>
                                     {% endfor %}
+                                    <li><a href="?search-type=category&value=etc">기타<span>({{category_etc_count}})</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -109,7 +112,7 @@
                             </div>
                             <div class="widget-tag-list">
                                 {% for tag in tags %}
-                                <a href="{{username}}/{{tag.slug_name}}">{{tag.name}}</a>
+                                <a href="?search-type=tag&value={{tag.slug_name}}">{{tag.name}}</a>
                                 {% endfor %}
                             </div>
                         </div>

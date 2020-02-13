@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
+from django.db.models import Count, Q
 from django.http import Http404, JsonResponse
 from django.utils.text import slugify
 from rest_framework import generics
@@ -13,13 +14,30 @@ from .models import Attachment, Blog, Category, Theme, Post, Tag
 from .forms import BlogCreateForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
 
 
-class BlogView(TemplateView):
+class BlogView(ListView):
+    model = Post
+    paginate_by = 6
     template_name = 'blog/blog.html'
+
+    def get_queryset(self):
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value) | Q(blog__name__icontains=value) | Q(user__username__icontains=value)).order_by('-id')
+
+        return Post.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['themes'] = Theme.objects.all()
-        context['posts'] = Post.objects.all()
+        context['theme_list'] = Theme.objects.all()
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
 
         return context
 
@@ -46,19 +64,49 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             
             member_group = Group.objects.get(name='Member')
             request_user.groups.remove(member_group)
+
+            messages.success(self.request, '<strong>블로그 만들기에 성공했습니다!</strong> 이제 당신은 블로거가 되었습니다.')
+
         return super().form_valid(form)
 
-class MemberBlogView(TemplateView):
+class MemberBlogView(ListView):
+    model = Post
+    paginate_by = 4
     template_name = 'blog/member_blog.html'
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value), user=user).order_by('-id')
+            elif search_type == 'category':
+                if value == 'etc':
+                    return Post.objects.filter(user=user, category__isnull=True).order_by('-id')
+                    
+                return Post.objects.filter(user=user, category__slug_name=value).order_by('-id')
+            elif search_type == 'tag':
+                return Post.objects.filter(user=user, tag__slug_name=value).order_by('-id')
+
+        return Post.objects.filter(user=user).order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs['username'])
-        blog =  Blog.objects.get(user=user)
+        blog =  get_object_or_404(Blog, user=user)
         context['blog'] = blog
-        context['categories'] = Category.objects.filter(blog=blog)
-        context['posts'] = Post.objects.filter(blog=blog)
+        context['categories'] = Category.objects.filter(blog=blog).annotate(Count('post'))
+        context['category_etc_count'] = Post.objects.filter(blog=blog, category__isnull=True).count()
         context['tags'] = Tag.objects.filter(blog=blog)
+
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
 
         return context
 
@@ -72,13 +120,7 @@ class MemberBlogPostDetailView(DetailView):
         user = get_object_or_404(User, username=self.kwargs['username'])
         
         return Post.objects.filter(user=user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['blog'] = context['post'].blog
-
-        return context
-
+        
 class MemberBlogSettingView(TemplateView):
     template_name = 'blog/member_blog_setting.html'
 
@@ -87,15 +129,42 @@ class MemberBlogSettingView(TemplateView):
         blog = get_owner_blog(self)
         context['blog'] = blog
         
+        categories = Category.objects.filter(blog=blog).annotate(Count('post'))
+        dict_categories = {}
+
+        for category in categories:
+            dict_categories[category.name] = str(category.post__count)
+
+        context['categories'] = dict_categories
+        
         return context
 
 class MemberBlogSettingPostListView(ListView):
+    model = Post
+    paginate_by = 4
     template_name = 'blog/member_blog_setting_post.html'
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         blog = get_owner_blog(self)
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            if search_type == 'question':
+                return Post.objects.filter(Q(title__icontains=value) | Q(content__icontains=value), blog=blog).order_by('-id')
 
         return Post.objects.filter(blog=blog).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        search_type = self.request.GET.get('search-type', '')
+        value = self.request.GET.get('value', '')
+
+        if search_type and value:
+            context['search_type'] = search_type
+            context['value'] = value
+    
+        return context
 
 class MemberBlogSettingPostCreateView(CreateView):
     template_name = 'blog/member_blog_setting_post_new.html'
@@ -121,9 +190,9 @@ class MemberBlogSettingPostCreateView(CreateView):
                 new_post.save()
                 form.save_m2m()
 
-            success_path = '/'.join(request.path.split('/')[:-1])
+                messages.success(request, '글을 생성했습니다.')
 
-            return redirect(success_path)
+            return redirect('blog:member_blog_setting_post', request.user)
         else:
             form = MemberBlogSettingPostCreateAndEditForm(blog)
         
@@ -165,9 +234,9 @@ class MemberBlogSettingPostEditView(UpdateView):
                 post.tag.set(form_tag)
                 post.save()
 
-            success_path = '/'.join(request.path.split('/')[:-1])
+                messages.success(request, '글을 수정했습니다.')
 
-            return redirect(success_path)
+            return redirect('blog:member_blog_setting_post', request.user)
         else:
             form = MemberBlogSettingPostCreateAndEditForm(blog)
         

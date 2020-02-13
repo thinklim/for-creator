@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'blog',
     'api',
     'rest_framework',
+    'django.contrib.sites',
+    'disqus',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,7 @@ LOGOUT_REDIRECT_URL = '/blog'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = '../media'
+
+DISQUS_WEBSITE_SHORTNAME = 'for-creator'
+
+SITE_ID = 1

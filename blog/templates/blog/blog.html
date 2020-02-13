@@ -1,6 +1,6 @@
 {% extends 'blog_base.html' %}
 
-{% block title %}BLOG{% endblock %}
+{% block title %}블로그 홈{% endblock %}
 
 {% load static %}
 
@@ -11,12 +11,24 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="crumbs-inner">
-                    <h2>Blog</h2>
+                    <h2>for-creator 세계에 오신것을 환영합니다.</h2>
                     <ul>
-                        <li><a href="{% url 'index' %}">Home</a></li>
-                        <li><span>Blog</span></li>
+                        <li><a href="{% url 'index' %}">첫 페이지로</a></li>
+                        <li><span>블로그</span></li>
                     </ul>
                 </div>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="row">
+                        <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                            {{message|safe}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -26,82 +38,204 @@
 <section class="blog-post ptb--100" id="blog">
     <div class="container">
         <div class="row">
-            <ul class="nav nav-tabs" id="theme-tabs">
-                <li role="presentation" class="active"><a href="#전체" data-toggle="tab">전체</a></li>
-                {% for theme in themes %}
-                <li role="presentation"><a href="#{{theme.name}}">{{theme.name}}</a></li>
-                {% endfor %}
-            </ul>
-            <div class="tab-content">
-                <div id="전체" class="tab-pane fade in active">
-                    <hr>
-                    {% for post in posts %}
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                        <div class="single-post">
-                            <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">
-                                <img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog image">
+            <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="widget widget-search">
+                    <form action="">
+                        <input type="hidden" name="search-type" value="question">
+                        <input type="text" name="value" minlength="2" placeholder="검색어를 입력해주세요." required>
+                        <button type="submit" id="search-submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <br>
+        {% if post_list %}
+        <div class="row">
+            <div class="blog-list">
+                {% for post in page_obj %}
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="list-item">
+                        <div class="blog-thumbnail">
+                            {% if post.thumbnail %}
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">
+                                <img src="{{post.thumbnail.url}}" alt="blog thumbnail">
                             </a>
-                            <div class="blog-meta">
-                                <ul>
-                                    <li><i class="fa fa-calendar"></i>{{post.created_date}}</li>
-                                    <li><i class="fa fa-user"></i>{{post.user.username}}</li>
-                                </ul>
-                            </div>
-                            <h2>
-                                <a href="{% url 'blog:member_blog_post_detail' username=post.user.username slug_title=post.slug_title %}">{{post.title}}</a>
-                            </h2>
-                            <p>{{post.content|striptags}}</p>
+                            {% else %}
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">
+                                <img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog thumbnail">
+                            </a>
+                            {% endif %}
+                        </div>
+                        <h2 class="blog-title">
+                            <a href="{% url 'blog:member_blog_post_detail' username=post.user slug_title=post.slug_title%}">{{post.title}}</a>
+                        </h2>
+                        <div class="blog-meta">
+                            <ul>
+                                <li><i class="fa fa-calendar"></i>{{post.created_date|date:'Y-m-d H:i'}}</li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'blog:member_blog' post.user %}">{{post.user}}</a></li>
+                            </ul>
+                        </div>
+                        <div class="blog-summery">
+                            <p>{{post.content|striptags}} </p>
                         </div>
                     </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-pills" id="theme-tabs">
+                    <li role="presentation" class="active">
+                        <a href="#전체" data-toggle="pill">전체</a>
+                    </li>
+                    {% for theme in theme_list %}
+                    <li role="presentation">
+                        <a href="#{{theme.slug_name}}"data-toggle="pill">{{theme.name}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    <div id="전체" class="tab-pane fade active in"></div>
+                    {% for theme in theme_list %}
+                    <div id="{{theme.slug_name}}" class="tab-pane fade"></div>
                     {% endfor %}
                 </div>
-                {% for theme in themes %}
-                <div id="{{theme.name}}" class="tab-pane fade">
-                    <hr>
-                    <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                        <div class="single-post">
-                            <a href="blog.html"><img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog image"></a>
-                            <div class="blog-meta">
-                                <ul>
-                                    <li><i class="fa fa-user"></i>John</li>
-                                    <li><i class="fa fa-comment"></i>Comments</li>
-                                    <li><i class="fa fa-calendar"></i>21 Feb 2018</li>
-                                </ul>
-                            </div>
-                            <h2><a href="blog.html">There are many variations</a></h2>
-                            <p>Lorem ipsum dolor sit amet,ut consectetur adipisicing elit,eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
+            </div>
+            
         </div>
+        {% endif %}
     </div>
 </section>
 <!-- blog area end -->
 <!-- pagination area start -->
+{% if post_list %}
+<div class="pagination">
+    <ul>
+        {% if page_obj.has_previous %}
+        <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.previous_page_number}}">이전 페이지</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <li><a href="?search-type={{search_type}}&value={{value}}&page={{page_obj.next_page_number}}">다음 페이지</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% else %}
 <div class="pagination-area">
     <div class="container">
         <div class="pagination">
-            <ul>
-                <li><a href="#">OLDER POSTS</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><span>3</span></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">NEWER POSTS</a></li>
-            </ul>
+            <ul></ul>
         </div>
     </div>
 </div>
+{% endif%}
 <!-- pagination area end -->
 
 <!-- Jquery JS-->
 <script src="{% static 'js/jquery-3.2.0.min.js'%}"></script>
+<script>
+function getActiveTheme() {
+    return $('#theme-tabs li.active a').attr('href');
+}
 
+var theme = getActiveTheme();
+
+// Initial Page Load
+if (theme === "#전체") {
+    $.get('/api/posts')
+    .done(function (data) {
+        createTabContent(data, theme);
+    });
+}
+</script>
 <script>
 $('#theme-tabs a').click(function (e) {
-    $(this).tab('show')
+    e.preventDefault();
+    $(this).tab('show');
+
+    var theme = $(this).attr('href');
+    var requestUrl = (theme !== '#전체') ? '/api/themes/' + theme.slice(1) + '/posts' : '/api/posts';
+
+    console.log(requestUrl);
+
+    $.get(requestUrl)
+    .done(function (data) {
+        createTabContent(data, theme);
+    });
 });
+</script>
+<script>
+// 동적으로 만들어진 Element는 $(document).on(...)으로 접근
+$(document).on('click', '.pagination ul li a[href="#"]', function (e) {
+    e.preventDefault();
+    var page = $(this).attr('data-page');
+
+    $.get(page)
+    .done(function (data) {
+        var theme = getActiveTheme()
+        
+        createTabContent(data, theme);
+    });
+});
+</script>
+<script>
+function createPosts(data) {
+    result = ''
+
+    $.each(data.results, function(index, item) {
+        var createdDate = '<li><i class="fa fa-calendar"></i>' + item.created_date + '</li>';
+        var user = '<li><i class="fa fa-user"></i><a href="/blog/' + item.user + '">' + item.user + '</a></li>';
+        var ul = $('<ul></ul>').html(createdDate + user);
+        var thumbnail = '';
+
+        var postUrl = '/blog/' + item.user + '/' + item.slug_title;
+
+        if (item.thumbnail) {
+            thumbnail += '<a href="' + postUrl + '"><img src="' + item.thumbnail+ '" alt="blog image"></a>';
+        } else {
+            thumbnail += '<a href="' + postUrl + '"><img src="/static/img/blog/blog-post-img1.jpg" alt="blog image"></a>';
+        }
+
+        var postMeta = $('<div class="blog-meta"></div>').html(ul).prop('outerHTML');
+        var title = '<h2><a href="' + postUrl + '">' + item.title +'</a></h2>';
+        var contentStripTags = item.content.replace(/(<([^>]+)>)/ig,"");
+        var content = '<p>' + contentStripTags  + '</p>';
+
+        var post = $('<div class="single-post"></div').html(thumbnail + title + postMeta + content);
+        var div = $('<div class="col-md-4 col-sm-6 col-xs-12 col-6"></div>');
+
+        result += div.html(post).prop('outerHTML');
+    });
+
+    return result
+}
+
+function createPaginationButton (data) {
+    result = ''
+        
+    if (data.previous) {
+        const previousPage = new URL(data.previous);
+
+        result +=  '<li><a href="#" data-page="' + previousPage.pathname + previousPage.search + '">이전 페이지</a></li>'
+    }
+    
+    if (data.next) {
+        const nextPage = new URL(data.next);
+
+        result +=  '<li><a href="#" data-page="' + nextPage.pathname + nextPage.search + '">다음 페이지</a></li>'
+    }
+        
+    return result
+}
+
+function createTabContent(data, theme) {
+    var posts = createPosts(data);
+    var pagination = $('.pagination ul');
+    var paginationButton = createPaginationButton(data);
+    
+    $(theme).html('<br>' + posts);
+    pagination.html(paginationButton);
+}
 </script>
 {% endblock %}

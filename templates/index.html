@@ -4,12 +4,18 @@
 <head>
     <!--- Basic Page Needs  -->
     <meta charset="utf-8">
-    <title>홈</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Meta  -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <!-- CSS -->
+
     {% load static %}
+
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'img/icon/favicon.ico' %}">
+
+    <title>For-Creator</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
@@ -44,7 +50,7 @@
                     <div class="menu-area">
                         <div class="col-md-3 col-sm-12 col-xs-12">
                             <div class="logo">
-                                <a href="/"><img src="{% static 'img/icon/logo.png' %}" alt="Zeedapp - App Landing Template"></a>
+                                <a href="/"><img src="{% static 'img/icon/for-creator-logo1.png' %}" alt="For-Creator-logo1"></a>
                             </div>
                         </div>
                         <div class="col-md-9 hidden-xs hidden-sm">
@@ -52,8 +58,7 @@
                                 <nav class="nav-menu">
                                     <ul>
                                         <li class="active"><a href="#home">Home</a></li>
-                                        <li><a href="{% url 'blog:blog' %}">Blog</a></li>
-                                        <li><a href="#contact">Contact</a></li>
+                                        <li><a href="{% url 'blog_index' %}">Blog</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -67,75 +72,24 @@
         </div>
     </header>
     <!-- header area end -->
-    <!-- slider area start -->
-    <section class="slider-area" id="home">
-        <div class="container">
-            <div class="col-md-6 col-sm-6 hidden-xs">
-                <div class="row">
-                    <div class="slider-img">
-                        <img src="{% static 'img/mobile/slider-left-img.png' %}" alt="slider image">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="row">
-                    <div class="slider-inner text-right">
-                        <h2>Who Else Wants To User</h2>
-                        <h5>And Use Our Zeed App !</h5>
-                        <a class="expand-video" href="https://www.youtube.com/watch?v=8qs2dZO6wcc"><i class="fa fa-play"></i>Watch the video</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- slider area end -->
-    <!-- service area start -->
-    <div class="service-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 col-sm-4 col-xs-12">
-                    <div class="service-single">
-                        <img src="{% static 'img/service/service-img1.png' %}" alt="service image">
-                        <h2>Call service</h2>
-                        <p>Take The initative to call</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-6">
-                    <div class="service-single">
-                        <img src="{% static 'img/service/service-img2.png' %}" alt="service image">
-                        <h2>Active warning</h2>
-                        <p>Timely detection of accidents</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 col-6">
-                    <div class="service-single">
-                        <img src="{% static 'img/service/service-img3.png' %}" alt="service image">
-                        <h2>Care plan</h2>
-                        <p>The care content is pushed</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- service area end -->
     <!-- about area start -->
     <div class="about-area ptb--100">
         <div class="container">
             <div class="section-title">
-                <h2>About App</h2>
-                <p>Nemo enim ipsam voluptatem quia voluptas sit </p>
+                <h2>About For-Creator</h2>
+                <p>For-Creator는 매우 간단하고 깨끗한 UI와 UX로 컨텐츠를 제공할 수 있는 <strong>Creator를 위한 서비스</strong>입니다.</p>
             </div>
             <div class="row d-flex flex-center">
                 <div class="col-md-6 col-sm-6 hidden-xs">
                     <div class="about-left-img">
-                        <img src="{% static 'img/about/abt-left-img.pn' %}g" alt="image">
+                        <img src="{% static 'img/about/about-image.png' %}" alt="about-image">
                     </div>
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-xs-12 d-flex flex-center">
                     <div class="about-content">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed  eiuiosmod terttmpor incididunt ut labore et dolore magna aliqua. enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. doliuor in reprehenderit in voluptate velit esse  dolore eu fugiat nulla pariatur. cdatat non proident</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tuiempor incididunt ut labore et dolore magna aliqua. enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
+                        <p>우리는 현재 블로그 서비스를 제공하고 있습니다.</p>
+                        <p>다양한 형식의 컨텐츠를 제공할 수 있는 서비스를 지속 개발할 것입니다.</p>
                     </div>
                 </div>
             </div>
@@ -146,153 +100,30 @@
     <div class="achivement-area ptb--100">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="ach-single">
                         <div class="icon"><i class="fa fa-users"></i></div>
-                        <p><span class="counter">10</span>k</p>
-                        <h5>Happy Clients</h5>
+                        <p><span class="counter">{{user_count}}</span></p>
+                        <h5>우리는 Creator와 함께하고 있습니다.</h5>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="ach-single">
-                        <div class="icon"><i class="fa fa-book"></i></div>
-                        <span class="counter">978</span>
-                        <h5>Projects complet</h5>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="ach-single">
-                        <div class="icon"><i class="fa fa-coffee"></i></div>
-                        <p><span class="counter">150</span>k</p>
-                        <h5>Cups of coffee</h5>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="ach-single">
-                        <div class="icon"><i class="fa fa-trophy"></i></div>
-                        <span class="counter">100</span>
-                        <h5>Winning awards</h5>
+                        <div class="icon"><i class="fa fa-info-circle"></i></div>
+                        <span class="counter">{{post_count}}</span>
+                        <h5>우리는 유용한 정보를 제공합니다.</h5>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- achivement area end -->
-    <!-- blog area start -->
-    <section class="blog-post ptb--100" id="blog">
-        <div class="container">
-            <div class="section-title">
-                <h2>Latest News</h2>
-                <p>Nemo enim ipsam voluptatem quia voluptas sit</p>
-            </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                    <div class="single-post">
-                        <a href="blog.html"><img src="{% static 'img/blog/blog-post-img.jpg' %}" alt="blog image"></a>
-                        <div class="blog-meta">
-                            <ul>
-                                <li><i class="fa fa-user"></i>John</li>
-                                <li><i class="fa fa-comment"></i>Comments</li>
-                                <li><i class="fa fa-calendar"></i>21 Feb 2018</li>
-                            </ul>
-                        </div>
-                        <h2><a href="blog.html">There are many variations</a></h2>
-                        <p>Lorem ipsum dolor sit amet,ut consectetur adipisicing elit,eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                    <div class="single-post">
-                        <a href="blog.html"><img src="{% static 'img/blog/blog-post-img1.jpg' %}" alt="blog image"></a>
-                        <div class="blog-meta">
-                            <ul>
-                                <li><i class="fa fa-user"></i>John</li>
-                                <li><i class="fa fa-comment"></i>Comments</li>
-                                <li><i class="fa fa-calendar"></i>21 Feb 2018</li>
-                            </ul>
-                        </div>
-                        <h2><a href="blog.html">There are many variations</a></h2>
-                        <p>Lorem ipsum dolor sit amet,ut consectetur adipisicing elit,eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12 col-6">
-                    <div class="single-post">
-                        <a href="blog.html"><img src="{% static 'img/blog/blog-post-img2.jpg' %}" alt="blog image"></a>
-                        <div class="blog-meta">
-                            <ul>
-                                <li><i class="fa fa-user"></i>John</li>
-                                <li><i class="fa fa-comment"></i>Comments</li>
-                                <li><i class="fa fa-calendar"></i>21 Feb 2018</li>
-                            </ul>
-                        </div>
-                        <h2><a href="blog.html">There are many variations</a></h2>
-                        <p>Lorem ipsum dolor sit amet,ut consectetur adipisicing elit,eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- blog area end -->
-    <!-- contact area start -->
-    <section class="contact-area ptb--100" id="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>Contact Us</h2>
-                <p>Nemo enim ipsam voluptatem quia voluptas sit</p>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="contact-form">
-                        <form action="#">
-                            <input type="text" name="name" placeholder="Enter Your Name">
-                            <input type="text" name="email" placeholder="Enter Your Email">
-                            <textarea name="msg" id="msg" placeholder="Your Message "></textarea>
-                            <input type="submit" value="Send" id="send">
-                        </form>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="contact_info">
-                        <div class="s-info">
-                            <i class="fa fa-map-marker"></i>
-                            <div class="meta-content">
-                                <span>17 Bath Rd, Heathrow, Longford,Hounslow</span>
-                                <span>TW7 1AB, UK</span>
-                            </div>
-                        </div>
-                        <div class="s-info">
-                            <i class="fa fa-mobile"></i>
-                            <div class="meta-content">
-                                <span>+0123 456 789 78</span>
-                                <span>+0123 456 789 78</span>
-                            </div>
-                        </div>
-                        <div class="s-info">
-                            <i class="fa fa-paper-plane"></i>
-                            <div class="meta-content">
-                                <span>Support@domain.com</span>
-                                <span>Example@Gmail.com</span>
-                            </div>
-                        </div>
-                        <div class="c-social">
-                            <ul>
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-behance"></i></a></li>
-                                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- contact area end -->
     <!-- footer area start -->
     <footer>
         <div class="footer-area">
             <div class="container">
                 <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> For-Creator All rights reserved | Template by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
             </div>
         </div>

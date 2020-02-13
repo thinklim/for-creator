@@ -12,39 +12,34 @@
                     <h3 class="title-5 m-b-35">글 설정</h3>
                     <div class="table-data__tool">
                         <div class="table-data__tool-left">
-                            <div class="rs-select2--light rs-select2--md">
-                                <select class="js-select2" name="property">
-                                    <option selected="selected">All Properties</option>
-                                    <option value="">Option 1</option>
-                                    <option value="">Option 2</option>
-                                </select>
-                                <div class="dropDownSelect2"></div>
-                            </div>
-                            <div class="rs-select2--light rs-select2--sm">
-                                <select class="js-select2" name="time">
-                                    <option selected="selected">Today</option>
-                                    <option value="">3 Days</option>
-                                    <option value="">1 Week</option>
-                                </select>
-                                <div class="dropDownSelect2"></div>
-                            </div>
-                            <button class="au-btn-filter">
-                                <i class="zmdi zmdi-filter-list"></i>filters</button>
+                            <form class="form-header" action="">
+                                <input type="hidden" name="search-type" value="question">
+                                <input class="au-input" type="text" name="value" minlength="2" placeholder="검색어를 입력하세요" required/>
+                                <button class="au-btn--submit" type="submit">
+                                    <i class="zmdi zmdi-search"></i>
+                                </button>
+                            </form>
                         </div>
                         <div class="table-data__tool-right">
                             <a href="{% url 'blog:member_blog_setting_post_new' user.get_username %}" type="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
                                 <i class="zmdi zmdi-plus"></i>글 만들기
                             </a>
-                            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                                <select class="js-select2" name="type">
-                                    <option selected="selected">Export</option>
-                                    <option value="">Option 1</option>
-                                    <option value="">Option 2</option>
-                                </select>
-                                <div class="dropDownSelect2"></div>
-                            </div>
                         </div>
                     </div>
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-4">
+                                <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                                    {{message|safe}}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                     <div class="table-responsive table-responsive-data2">
                         <table class="table table-data2">
                             <thead>
@@ -64,7 +59,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for post in post_list %}
+                                {% for post in page_obj %}
                                 <tr class="tr-shadow">
                                     <td>
                                         <label class="au-checkbox">
@@ -74,10 +69,10 @@
                                     </td>
                                     <td>{{post.id}}</td>
                                     <td><a href="{% url 'blog:member_blog_setting_post_edit' username=user.get_username pk=post.id %}">{{post.title}}</a></td>
-                                    <td>{{post.user.username}}</td>
-                                    <td>{{post.created_date}}</td>
-                                    <td>{{post.updated_date}}</td>
-                                    <td>{{post.category.name}}</td>
+                                    <td>{{post.user}}</td>
+                                    <td>{{post.created_date|date:'Y-m-d H:i'}}</td>
+                                    <td>{{post.updated_date|date:'Y-m-d H:i'}}</td>
+                                    <td>{{post.category}}</td>
                                     <td>
                                         <div class="table-data-feature">
                                             <button class="item" data-toggle="tooltip" data-placement="top" data-post="{{post.id}}" title="Delete">
@@ -95,6 +90,26 @@
                         </table>
                     </div>
                     <!-- END DATA TABLE -->
+                    <!-- START PAGINATION -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?search-type={{search_type}}&value={{value}}&page={{page_obj.previous_page_number}}" aria-label="Previous">
+                                    이전 페이지
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?search-type={{search_type}}&value={{value}}&page={{page_obj.next_page_number}}" aria-label="Next">
+                                    다음 페이지
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    <!-- END PAGINATION -->
                 </div>
             </div>
         </div>

@@ -13,3 +13,5 @@ sqlparse==0.3.0
 typed-ast==1.4.0
 wrapt==1.11.2
 djangorestframework==3.11.0
+wheel==0.34.2
+django-disqus==0.5
