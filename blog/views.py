@@ -187,6 +187,10 @@ class MemberBlogSettingPostCreateView(CreateView):
                 new_post.slug_title = get_permalink(new_post.title)
                 new_post.blog = blog
                 new_post.user = request.user
+
+                if new_post.thumbnail:
+                    new_post.thumbnail.name = get_extension_permalink(new_post.thumbnail.name)
+
                 new_post.save()
                 form.save_m2m()
 
@@ -275,6 +279,8 @@ def upload(request):
         if form.is_valid():
             blog = Blog.objects.get(user=request.user)
             image = request.FILES['image']
+            image.name = get_extension_permalink(image.name)
+            print(image)
 
             attachment = Attachment(blog=blog, name=image.name, image=image)
             attachment.save()
@@ -309,3 +315,9 @@ def get_permalink(text):
     permalink = slug + '-' + last_uid
 
     return permalink
+
+def get_extension_permalink(text):
+    filename, extension = text.split('.')[:-1], text.split('.')[-1]
+    extension_permalink = get_permalink('.'.join(filename)) + '.' + extension
+
+    return extension_permalink

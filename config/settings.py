@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.sites',
     'disqus',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -121,22 +122,39 @@ USE_L10N = True
 
 USE_TZ = False
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
 LOGIN_REDIRECT_URL = '/blog'
 
 LOGOUT_REDIRECT_URL = '/blog'
 
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = '../media'
-
 DISQUS_WEBSITE_SHORTNAME = 'for-creator'
 
 SITE_ID = 1
+
+# AWS
+with open('../blog_project_2020_aws.json') as f:
+    aws_json = json.loads(f.read())
+    AWS_ACCESS_KEY_ID = aws_json['access_key_id']
+    AWS_SECRET_ACCESS_KEY = aws_json['secret_access_key']
+
+AWS_REGION = 'ap-northeast-2'
+
+AWS_STORAGE_BUCKET_NAME = 'for-creator'
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_DEFAULT_ACL = 'public-read'
+
+AWS_LOCATION = 'static'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+STATICFILES_STORAGE = 'config.storage.S3StaticStorage'
+
+DEFAULT_FILE_STORAGE = 'config.storage.S3MediaStorage'
