@@ -194,7 +194,8 @@ function createPosts(data) {
         if (item.thumbnail) {
             thumbnail += '<a href="' + postUrl + '"><img src="' + item.thumbnail+ '" alt="blog image"></a>';
         } else {
-            thumbnail += '<a href="' + postUrl + '"><img src="/static/img/blog/blog-post-img1.jpg" alt="blog image"></a>';
+            var defaultThumbnail = "{% static  'img/blog/blog-post-img1.jpg' %}";
+            thumbnail += '<a href="' + postUrl + '"><img src="' + defaultThumbnail + '" alt="blog thumbnail"></a>';
         }
 
         var postMeta = $('<div class="blog-meta"></div>').html(ul).prop('outerHTML');
