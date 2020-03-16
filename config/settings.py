@@ -20,13 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('../blog_project_2020_secret_key.txt') as f:
+with open('../blog-project-2020-setting/develop_secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.compute.amazonaws.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -84,7 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '../blog_project_2020_my.cnf'
+            'read_default_file': '../blog-project-2020-setting/develop_my.cnf'
         },
     }
 }
@@ -131,7 +131,7 @@ DISQUS_WEBSITE_SHORTNAME = 'for-creator'
 SITE_ID = 1
 
 # AWS
-with open('../blog_project_2020_aws.json') as f:
+with open('../blog-project-2020-setting/aws.json') as f:
     aws_json = json.loads(f.read())
     AWS_ACCESS_KEY_ID = aws_json['access_key_id']
     AWS_SECRET_ACCESS_KEY = aws_json['secret_access_key']
