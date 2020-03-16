@@ -270,6 +270,9 @@ class MemberBlogSettingTagListView(ListView):
 
         return context
 
+class MemberBlogSettingUserView(TemplateView):
+    template_name = 'blog/member_blog_setting_user.html'
+
 @login_required
 @permission_required('blog.add_attachment')
 def upload(request):

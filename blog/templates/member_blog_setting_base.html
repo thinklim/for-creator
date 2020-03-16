@@ -149,6 +149,10 @@
                                                 </div>
                                             </div>
                                             <div class="account-dropdown__body">
+                                                <div class="account-dropdown__item">
+                                                    <a href="{% url 'blog:member_blog_setting_user' user.username %}">
+                                                        <i class="zmdi zmdi-account"></i>사용자 설정</a>
+                                                </div>
                                             </div>
                                             <div class="account-dropdown__footer">
                                                 <a href="{% url 'logout' %}">

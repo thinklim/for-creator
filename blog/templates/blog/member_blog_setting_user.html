@@ -1,0 +1,59 @@
+{% extends 'member_blog_setting_base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="title-5 m-b-35">사용자 설정</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong>비밀번호 변경</strong>
+                                </div>
+                                <div class="card-body card-block">
+                                    <div class="alert alert-warning" role="alert">
+                                        <h4 class="alert-heading">안내!</h4>
+                                        <p>이전에 사용하지 않은 새로운 비밀번호를 사용하고 변경된 비밀번호는 이전 비밀번호와 연관성이 없어야 안전합니다.</p>
+                                        <hr>
+                                        <p class="mb-0">계속 진행하시겠습니까?</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-warning btn-sm">비밀번호 변경</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong>회원 탈퇴</strong>
+                                </div>
+                                <div class="card-body card-block">
+                                    <div class="alert alert-danger" role="alert">
+                                        <h4 class="alert-heading">안내!</h4>
+                                        <p>회원 탈퇴를 진행하면 이 계정과 관련된 모든 정보가 삭제됩니다.</p>
+                                        <p>다시는 정보를 복구할 수 없습니다.</p>
+                                        <hr>
+                                        <p class="mb-0">그래도 진행하시겠습니까?</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-danger btn-sm">회원 탈퇴</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery JS-->
+<script src="{% static 'cooladmin/vendor/jquery-3.2.1.min.js' %}"></script>
+{% endblock content%}
