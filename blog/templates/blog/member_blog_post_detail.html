@@ -44,7 +44,11 @@
                                 <h2>태그</h2>
                                 <ul>
                                     {% for tag in post.tag.all %}
-                                    <li><a href="#">{{tag.name}}</a></li>
+                                    <li>
+                                        <a href="{% url 'blog:member_blog' post.user.username %}?search-type=tag&value={{tag.slug_name}}">
+                                            {{tag.name}}
+                                        </a>
+                                    </li>
                                     {% endfor %}
                                 </ul>
                             </div>
