@@ -1839,11 +1839,17 @@ END Blog Standard
     max-width: 100%;
     max-height: 210px;
 }
+.blog-summery {
+    margin: 25px 0px 25px;
+}
 .blog-summery p {
     color: #696969;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.blog-content {
+    margin: 25px 0px 25px;
 }
 .list-item h2.blog-title a {
     display: block;
@@ -1855,9 +1861,6 @@ END Blog Standard
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.blog-summery {
-    margin: 25px 0px 25px;
 }
 .slicknav_nav li {
     float: left;
