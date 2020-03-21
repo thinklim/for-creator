@@ -3,6 +3,7 @@ from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
@@ -12,7 +13,7 @@ from django.http import Http404, JsonResponse
 from django.utils.text import slugify
 from rest_framework import generics
 from .models import Attachment, Blog, Category, Theme, Post, Tag
-from .forms import BlogCreateForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
+from .forms import BlogCreateForm, CustomPasswordChangeForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
 
 
 class BlogView(ListView):
@@ -275,15 +276,36 @@ class MemberBlogSettingUserView(LoginRequiredMixin, View):
     template_name = 'blog/member_blog_setting_user.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        form = CustomPasswordChangeForm(request.user)
+
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         hidden_method = request.POST.get('_method', '').lower()
 
-        if hidden_method == 'delete':
+        if hidden_method == 'put':
+            return self.put(request, *args, **kwargs)
+        elif hidden_method == 'delete':
            return self.delete(request, *args, **kwargs)
 
         return None
+
+    def put(self, request, *args, **kwargs):
+        if request.user.username == kwargs['username']:
+            form = CustomPasswordChangeForm(request.user, request.POST)
+
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+                messages.success(request, '비밀번호 변경에 성공했습니다.')
+                
+                return redirect('blog:member_blog_setting_user', username=request.user.username)
+            else:
+                messages.error(request, '비밀번호 변경에 실패했습니다.')
+
+                form = CustomPasswordChangeForm(request.user)
+            
+            return render(request, self.template_name, {'form': form})
 
     def delete(self, request, *args, **kwargs):
         if request.user.username == kwargs['username']:
