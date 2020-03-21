@@ -1,4 +1,5 @@
 import uuid
+from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
@@ -270,8 +271,29 @@ class MemberBlogSettingTagListView(ListView):
 
         return context
 
-class MemberBlogSettingUserView(TemplateView):
+class MemberBlogSettingUserView(LoginRequiredMixin, View):
     template_name = 'blog/member_blog_setting_user.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        hidden_method = request.POST.get('_method', '').lower()
+
+        if hidden_method == 'delete':
+           return self.delete(request, *args, **kwargs)
+
+        return None
+
+    def delete(self, request, *args, **kwargs):
+        if request.user.username == kwargs['username']:
+            print(request.user.get_username())
+
+            with transaction.atomic():
+                request.user.delete()
+                messages.success(request, '회원 탈퇴에 성공했습니다.')
+                
+            return redirect('blog_index')
 
 @login_required
 @permission_required('blog.add_attachment')
