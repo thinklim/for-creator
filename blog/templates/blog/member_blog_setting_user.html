@@ -43,7 +43,11 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm">회원 탈퇴</button>
+                                    <form action="{% url 'blog:member_blog_setting_user' user.get_username %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="delete">
+                                        <button type="submit" class="btn btn-danger btn-sm">회원 탈퇴</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
