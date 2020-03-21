@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 from .models import Attachment, Blog, Category, Post, Tag
 
 
@@ -30,3 +31,13 @@ class MemberBlogSettingPostCreateAndEditForm(forms.ModelForm):
 
 class UploadImageFileForm(forms.Form):
     image = forms.ImageField()
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    form_tags = {'old_password': '이전 비밀번호', 'new_password1': '새 비밀번호', 'new_password2': '새 비밀번호 확인'}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for key, value in self.form_tags.items():
+            self.fields[key].label = value
+            self.fields[key].widget.attrs.update({'class': 'form-control'})
