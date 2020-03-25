@@ -158,3 +158,16 @@ STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'config.storage.S3StaticStorage'
 
 DEFAULT_FILE_STORAGE = 'config.storage.S3MediaStorage'
+
+# Email Push
+with open('../blog-project-2020-setting/smtp_email.json') as f:
+    smtp_email_json = json.loads(f.read())
+    EMAIL_HOST = smtp_email_json['email_host']
+    EMAIL_HOST_USER = smtp_email_json['email_host_user']
+    EMAIL_HOST_PASSWORD = smtp_email_json['email_host_password']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
