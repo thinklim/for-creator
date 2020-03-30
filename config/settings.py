@@ -148,7 +148,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 AWS_DEFAULT_ACL = 'public-read'
 
-AWS_LOCATION = 'static'
+AWS_LOCATION = 'static_develop'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
