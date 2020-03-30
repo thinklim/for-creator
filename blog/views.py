@@ -9,9 +9,8 @@ from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.db.models import Count, Q
-from django.http import Http404, JsonResponse
+from django.http import HttpResponse, Http404, JsonResponse
 from django.utils.text import slugify
-from rest_framework import generics
 from .models import Attachment, Blog, Category, Theme, Post, Tag
 from .forms import BlogCreateForm, CustomPasswordChangeForm, MemberBlogSettingPostCreateAndEditForm, UploadImageFileForm
 
@@ -43,37 +42,44 @@ class BlogView(ListView):
 
         return context
 
-class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, View):
     form_class = BlogCreateForm
     login_url = '/login'
     permission_required = 'blog.add_blog'
     redirect_field_name = '/login'
     success_url = '/blog'
-    template_name = 'blog/blog.html'
 
     def get(self, request, *args, **kwargs):
-        return redirect('/blog')
+        return HttpResponse(status=404)
 
-    def form_valid(self, form):
-        with transaction.atomic():
-            request_user = self.request.user
-            new_blog = form.save(commit=False)
-            new_blog.user = request_user
-            new_blog.save()
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
 
-            blogger_group = Group.objects.get(name='Blogger')
-            blogger_group.user_set.add(request_user)
+        if form.is_valid():
+            with transaction.atomic():
+                request_user = self.request.user
+                new_blog = form.save(commit=False)
+                new_blog.user = request_user
+                new_blog.save()
+                
+                blogger_group = Group.objects.get(name='Blogger')
+                blogger_group.user_set.add(request_user)
+                
+                member_group = Group.objects.get(name='Member')
+                request_user.groups.remove(member_group)
+                
+                messages.success(self.request, '<strong>블로그 만들기에 성공했습니다!</strong> 이제 당신은 블로거가 되었습니다.')
+        else:
+            error_data = form.errors.get_json_data()
             
-            member_group = Group.objects.get(name='Member')
-            request_user.groups.remove(member_group)
-
-            messages.success(self.request, '<strong>블로그 만들기에 성공했습니다!</strong> 이제 당신은 블로거가 되었습니다.')
-
-        return super().form_valid(form)
+            if 'name' in error_data and error_data['name'][0]['code'] == 'unique':
+                messages.error(self.request, '<strong>같은 이름의 블로그가 이미 존재합니다.</strong> 블로그 이름을 다른 이름으로 지으세요.')
+        
+        return redirect(self.success_url)
 
 class MemberBlogView(ListView):
     model = Post
-    paginate_by = 4
+    paginate_by = 6
     template_name = 'blog/member_blog.html'
 
     def get_queryset(self):
