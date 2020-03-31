@@ -5,10 +5,12 @@ Blog-Project-2020은 사용자가 쉽고 간편하게 콘텐츠를 생성할 수
   - 쉽고 간편한 UI/UX
   - 블로거 전용 대시보드
 
-![for-creator01](https://user-images.githubusercontent.com/51071806/75848256-0d68e300-5e25-11ea-9796-5f8bc7392125.PNG)
-![for-creator02](https://user-images.githubusercontent.com/51071806/75848257-0e017980-5e25-11ea-9912-865038672c5f.PNG)
-![for-creator03](https://user-images.githubusercontent.com/51071806/75848259-0e017980-5e25-11ea-91ae-e70d01075999.PNG)
+<img src="https://user-images.githubusercontent.com/51071806/78011828-1777f600-737f-11ea-8884-9064474b9396.png" width="40%"></img>
+<img src="https://user-images.githubusercontent.com/51071806/78011888-28c10280-737f-11ea-8315-7747a6c76531.png" width="40%"></img>
+<img src="https://user-images.githubusercontent.com/51071806/78011904-3080a700-737f-11ea-8014-880bd12565a5.png" width="40%"></img>
+<img src="https://user-images.githubusercontent.com/51071806/78011922-35455b00-737f-11ea-85f8-f8184632d896.png" width="40%"></img>
 ![for-creator04](https://user-images.githubusercontent.com/51071806/75848253-0c37b600-5e25-11ea-8d52-7b3e847800e6.PNG)
+![for-creator03](https://user-images.githubusercontent.com/51071806/75848259-0e017980-5e25-11ea-91ae-e70d01075999.PNG)
 
 [Demo](http://www.for-creator.xyz/)
 
