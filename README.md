@@ -6,11 +6,14 @@ Blog-Project-2020은 사용자가 쉽고 간편하게 콘텐츠를 생성할 수
   - 블로거 전용 대시보드
 
 <img src="https://user-images.githubusercontent.com/51071806/78011828-1777f600-737f-11ea-8884-9064474b9396.png"></img>
+---
 <img src="https://user-images.githubusercontent.com/51071806/78011888-28c10280-737f-11ea-8315-7747a6c76531.png" width="40%"></img>
 <img src="https://user-images.githubusercontent.com/51071806/78011904-3080a700-737f-11ea-8014-880bd12565a5.png" width="35%"></img>
 <img src="https://user-images.githubusercontent.com/51071806/78011922-35455b00-737f-11ea-85f8-f8184632d896.png" width="20%"></img>
-<img src="https://user-images.githubusercontent.com/51071806/78015611-9885bc00-7384-11ea-8e1a-55ba55487fc0.png" width="50%"></img>
-<img src="https://user-images.githubusercontent.com/51071806/78015625-9c194300-7384-11ea-92a6-4b1d90e2b635.png" width="40%"></img>
+---
+<img src="https://user-images.githubusercontent.com/51071806/78015611-9885bc00-7384-11ea-8e1a-55ba55487fc0.png" width="80%"></img>
+---
+<img src="https://user-images.githubusercontent.com/51071806/78015625-9c194300-7384-11ea-92a6-4b1d90e2b635.png" width="60%"></img>
 
 
 [Demo](http://www.for-creator.xyz/)
