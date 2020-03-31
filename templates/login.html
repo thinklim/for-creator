@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-161725487-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'UA-161725487-1');
+    </script>
+    
     <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -83,7 +93,7 @@
                                         <input type="checkbox" name="remember">로그인 상태 유지
                                     </label>
                                     <label>
-                                        <a href="{% static 'cooladmin/#' %}">비밀번호를 찾으시나요?</a>
+                                        <a href="{% url 'password_reset' %}">비밀번호를 찾으시나요?</a>
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--custom-blue m-b-20" type="submit">로그인</button>

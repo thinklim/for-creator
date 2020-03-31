@@ -20,13 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('../blog_project_2020_secret_key.txt') as f:
+with open('../blog-project-2020-setting/develop_secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.compute.amazonaws.com']
+ALLOWED_HOSTS = ['.for-creator.xyz']
 
 
 # Application definition
@@ -84,7 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '../blog_project_2020_my.cnf'
+            'read_default_file': '../blog-project-2020-setting/develop_my.cnf'
         },
     }
 }
@@ -131,7 +131,7 @@ DISQUS_WEBSITE_SHORTNAME = 'for-creator'
 SITE_ID = 1
 
 # AWS
-with open('../blog_project_2020_aws.json') as f:
+with open('../blog-project-2020-setting/aws.json') as f:
     aws_json = json.loads(f.read())
     AWS_ACCESS_KEY_ID = aws_json['access_key_id']
     AWS_SECRET_ACCESS_KEY = aws_json['secret_access_key']
@@ -153,8 +153,25 @@ AWS_LOCATION = 'static'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
 STATICFILES_STORAGE = 'config.storage.S3StaticStorage'
 
 DEFAULT_FILE_STORAGE = 'config.storage.S3MediaStorage'
+
+# Email Push
+with open('../blog-project-2020-setting/smtp_email.json') as f:
+    smtp_email_json = json.loads(f.read())
+    EMAIL_HOST = smtp_email_json['email_host']
+    EMAIL_HOST_USER = smtp_email_json['email_host_user']
+    EMAIL_HOST_PASSWORD = smtp_email_json['email_host_password']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True

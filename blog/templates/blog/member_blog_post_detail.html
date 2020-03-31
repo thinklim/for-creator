@@ -2,67 +2,137 @@
 
 {% block title %}{{post.title}}{% endblock %}
 
-<!-- {% load static %} -->
+{% load static %}
 
 {% block content %}
-    <!-- crumbs area start -->
-    <div class="crumbs-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <!-- instead of bootstrap breadcrumb -->
-                    <div class="crumbs-inner"> 
-                        <h2>{{post.blog}}</h2>
-                        <ul>
-                            <li><a href="{% url 'blog_index' %}">블로그</a></li>
-                            <li><a href="{% url 'blog:member_blog' post.user %}">{{post.user}}</a></li>
-                            <li><span>글</span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section>
+    <div class="post-detail-bg">
+        <img src="{% static 'img/bg/spring.jpg' %}" style="width: 100%">
     </div>
-    <!-- crumbs area end -->
-    <!-- blog post area start -->
-    <div class="blog-details ptb--120">
-        <div class="container">
-            <div class="row">
-                <!-- blog details area start -->
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="blog-info">
-                        <h1 class="blog-title text-center">{{post.title}}</h1>
-                        <div class="blog-meta text-right">
-                            <ul>
-                                <li><i class="fa fa-calendar"></i> {{post.created_date|date:'Y-m-d H:i'}}</li>
-                                <li><i class="fa fa-user"></i>{{post.user.username}}</li>
-                            </ul>
-                        </div>
-                        <div class="blog-summery">
-                            {{post.content|safe}}
-                            <div class="blog-single-tags">
-                                <h2>태그</h2>
-                                <ul>
-                                    {% for tag in post.tag.all %}
-                                    <li><a href="#">{{tag.name}}</a></li>
-                                    {% endfor %}
-                                </ul>
+</section>
+
+ <!--Main Layout-->
+ <main>
+
+    <div class="container-fluid mb-5">
+
+        <!--Grid row-->
+        <div class="row" style="margin-top: -100px;">
+
+            <!--Grid column-->
+            <div class="col-md-12 px-lg-5">
+                <!--Card-->
+                <div class="card pb-5 mx-md-3">
+                    <div class="card-body">
+
+                        <div class="container">
+
+                            <!--Section heading-->
+                            <h1 class="text-center h1 pt-4 mb-3">
+                                <strong>{{post.title}}</strong>
+                            </h1>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12 d-flex justify-content-center">
+                                    <p class="font-small dark-grey-text mb-1"> <i class="far fa-user" aria-hidden="true"></i>
+                                        <a href="{% url 'blog:member_blog' post.user %}"> {{post.user}}</a>
+                                    </p>
+                                    <p class="font-small grey-text mb-0 ml-3">
+                                        <i class="far fa-clock-o dark-grey-text"></i>{{post.created_date|date:'Y-m-d H:i'}}</p>
+                                </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12 d-flex justify-content-end">
+                                    <nav aria-label="breadcrumb">
+                                        <div class="container">
+                                            <ol class="breadcrumb white justify-content-end">
+                                                <li class="breadcrumb-item"><a href="{% url 'blog_index' %}">블로그</a>
+                                                    <i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
+                                                </li>
+                                                <li class="breadcrumb-item">
+                                                    <a href="{% url 'blog:member_blog' post.user %}">{{post.blog.name}}</a>
+                                                    <i class="fas fa-angle-right mx-2" aria-hidden="true"></i>
+                                                </li>
+                                                <li class="breadcrumb-item active">{{post.title}}</li>
+                                            </ol>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+
+                            <!--Grid row-->
+                            <div class="row pt-lg-5 pt-3">
+
+                                <!--Grid column-->
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="post-content">
+                                        {{post.content|safe}}
+                                    </div>
+                                    <hr class="mt-5">
+
+                                    <!--Tags-->
+                                    <section>
+
+                                        <!--Main wrapper-->
+                                        <div class="comments-list text-center text-md-left">
+                                            <div class="text-left my-5">
+                                                <h3 class="font-weight-bold">태그</h3>
+                                            </div>
+                                            <!--row-->
+                                            <div class="row mb-5">
+                                            {% for tag in post.tag.all %}
+                                                <a href="{% url 'blog:member_blog' post.user.username %}?search-type=tag&value={{tag.slug_name}}" class="badge badge-pill custom-color hoverable mx-1">
+                                                    {{tag.name}}
+                                                </a>
+                                            {% endfor %}
+                                            </div>
+                                            <!--/.row-->
+                                        </div>
+                                        <!--/.Main wrapper-->
+
+                                    </section>
+                                    <!--/Comments-->
+                                    <hr>
+
+                                        <!--Comments-->
+                                        <section>
+
+                                            <!--Main wrapper-->
+                                            <div class="comments-list text-center text-md-left">
+                                                <div class="text-left my-5">
+                                                    <h3 class="font-weight-bold">댓글</h3>
+                                                </div>
+
+                                                {% load disqus_tags %}
+                                                {% disqus_show_comments %}
+                                            </div>
+                                            <!--/.Main wrapper-->
+
+                                        </section>
+                                        <!--/Comments-->
+                                        <hr>
+
+                                </div>
+                                <!--/Grid column-->
+
+                            </div>
+                            <!--/Grid row-->
+
                         </div>
+                        <!--Grid column-->
+
                     </div>
-                    <!-- comment area start -->
-                    <div class="comment-area">
-                        <div class="comment-title">
-                            <h4>댓글</h4>
-                        </div>
-                        {% load disqus_tags %}
-                        {% disqus_show_comments %}
-                    </div>
-                    <!-- comment area end -->
+                    <!--Grid row-->
+
                 </div>
-                <!-- blog details area end -->
+                <!--/Card-->
             </div>
+            <!--/Grid column-->
         </div>
+        <!--/Grid row-->
     </div>
-    <!-- blog post area end -->
+
+</main>
+<!--Main Layout-->
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.urls import register_converter, path
 from .views import BlogCreateView, MemberBlogPostDetailView,  MemberBlogView, upload
 from .views import MemberBlogSettingView, MemberBlogSettingPostCreateView, MemberBlogSettingPostListView, MemberBlogSettingPostEditView
-from .views import MemberBlogSettingCategoryListView, MemberBlogSettingTagListView
+from .views import MemberBlogSettingCategoryListView, MemberBlogSettingTagListView, MemberBlogSettingUserView
 from . import converters
 
 app_name = 'blog'
@@ -17,6 +17,7 @@ urlpatterns = [
     path('<str:username>/settings/posts/new', MemberBlogSettingPostCreateView.as_view(), name='member_blog_setting_post_new'),
     path('<str:username>/settings/posts', MemberBlogSettingPostListView.as_view(), name='member_blog_setting_post'),
     path('<str:username>/settings/tags', MemberBlogSettingTagListView.as_view(), name='member_blog_setting_tag'),
+    path('<str:username>/settings/user', MemberBlogSettingUserView.as_view(), name='member_blog_setting_user'),
     path('<str:username>/settings', MemberBlogSettingView.as_view(), name='member_blog_setting'),
     path('<str:username>/<uslug:slug_title>', MemberBlogPostDetailView.as_view(), name='member_blog_post_detail'),
     path('<str:username>', MemberBlogView.as_view(), name='member_blog'),
