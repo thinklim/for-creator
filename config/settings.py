@@ -24,9 +24,9 @@ with open('../blog-project-2020-setting/develop_secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.for-creator.xyz']
 
 
 # Application definition
@@ -148,10 +148,14 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 AWS_DEFAULT_ACL = 'public-read'
 
-AWS_LOCATION = 'static_develop'
+AWS_LOCATION = 'static'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
