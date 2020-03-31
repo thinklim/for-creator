@@ -9,8 +9,9 @@ Blog-Project-2020은 사용자가 쉽고 간편하게 콘텐츠를 생성할 수
 <img src="https://user-images.githubusercontent.com/51071806/78011888-28c10280-737f-11ea-8315-7747a6c76531.png" width="40%"></img>
 <img src="https://user-images.githubusercontent.com/51071806/78011904-3080a700-737f-11ea-8014-880bd12565a5.png" width="35%"></img>
 <img src="https://user-images.githubusercontent.com/51071806/78011922-35455b00-737f-11ea-85f8-f8184632d896.png" width="20%"></img>
-<img src="https://user-images.githubusercontent.com/51071806/75848259-0e017980-5e25-11ea-91ae-e70d01075999.PNG"></img>
-<img src="https://user-images.githubusercontent.com/51071806/75848253-0c37b600-5e25-11ea-8d52-7b3e847800e6.PNG" width="40%"></img>
+<img src="https://user-images.githubusercontent.com/51071806/78015611-9885bc00-7384-11ea-8e1a-55ba55487fc0.png" width="50%"></img>
+<img src="https://user-images.githubusercontent.com/51071806/78015625-9c194300-7384-11ea-92a6-4b1d90e2b635.png" width="40%"></img>
+
 
 [Demo](http://www.for-creator.xyz/)
 
