@@ -1,6 +1,6 @@
-# Blog-Project-2020
+# For-Creator
 
-Blog-Project-2020은 사용자가 쉽고 간편하게 콘텐츠를 생성할 수 있는 블로그 플랫폼입니다. [Demo](http://www.for-creator.xyz/)
+For-Creator는 사용자가 쉽고 간편하게 콘텐츠를 생성할 수 있는 블로그 플랫폼입니다. [Demo](http://www.for-creator.xyz/)
 
   - 쉽고 간편한 UI/UX
   - 블로거 전용 대시보드
@@ -18,10 +18,19 @@ Blog-Project-2020은 사용자가 쉽고 간편하게 콘텐츠를 생성할 수
 
 [Demo](http://www.for-creator.xyz/)
 
+### Release 1.1!
+
+  - 기능 추가:
+    - 사용자 설정 페이지에 사용자 프로필 추가(사용자 비밀번호 변경 및 탈퇴)
+    - 사용자 비밀번호 재설정
+    - 구글 애널리틱스
+  - 변경:
+    - 블로그 영역 Material Design UI로 변경
+
 
 ### Tech
 
-Blog-Project-2020은 다양한 오픈 소스를 사용합니다:
+For-Creator는 다양한 오픈 소스를 사용합니다:
 
 * [Django](https://www.djangoproject.com/) - High-level Python Web framework that encourages rapid development and clean, pragmatic design.
 * [djangorestframework](https://www.django-rest-framework.org/) - A powerful and flexible toolkit for building Web APIs.(REST API)
@@ -33,13 +42,13 @@ Blog-Project-2020은 다양한 오픈 소스를 사용합니다:
 * [jQuery](https://jquery.com/) - A fast, small, and feature-rich JavaScript library.
 
 ### Installation
-Blog-Project-2020은 [Python](https://www.python.org/) v3.6+ 환경에서 실행됩니다.
+For-Creator는 [Python](https://www.python.org/) v3.6+ 환경에서 실행됩니다.
 
 1. 저장소 클론
 2. 저장소 위치로 터미널 이동
 
     ```sh
-    $ cd [something path]/blog-project-2020
+    $ cd [something path]/for-creator
     ```
 
 3. 가상 환경 패키지 설치
@@ -67,4 +76,4 @@ Blog-Project-2020은 [Python](https://www.python.org/) v3.6+ 환경에서 실행
     $ pip install -r requirements.txt
     ```
 
-6. config/setting.py에서 secret_key, Database Access File, AWS Access key 설정이 필요합니다.
+6. config/setting.py에서 secret_key, Database Access File, AWS Access key 및 SMTP Email 설정이 필요합니다.
